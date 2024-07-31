@@ -1,9 +1,13 @@
 from requests.auth import HTTPBasicAuth
 import requests, json
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
+# loading variables from .env file
+load_dotenv()
 
-auth = HTTPBasicAuth('saccsf', '2b9c2def910f8be6c2e8b3bdd1c3d2fe')
+auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
 
 url = "https://api.neoncrm.com/v2/accounts?userType=COMPANY&pageSize=5000"
 
