@@ -1,23 +1,28 @@
 from requests.auth import HTTPBasicAuth
-import requests, json, os
+import requests, json, os, logging
+import logging.config
 import pandas as pd
 from dotenv import load_dotenv
 from datetime import date
 from datetime import datetime
 
+# loading logger
+logging.config.fileConfig("NeonCRMAnalytics.log")
 
 # loading variables from .env file
 load_dotenv()
 auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
 
 API_BASE_URL = "https://api.neoncrm.com/v2"
+API_LIMIT = 5000
+API_VERSION = "2.8"
 
 def get_accounts_companies():
-  url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=5000"
+  url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=" + str(API_LIMIT)
 
   payload = {}
   headers = {
-    'NEON-API-VERSION': '2.8',
+    'NEON-API-VERSION': str(API_VERSION),
     'Content-Type': 'application/json'
   }
 
@@ -26,11 +31,11 @@ def get_accounts_companies():
 
 
 def get_accounts_individuals():
-  url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=5000"
+  url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=" + str(API_LIMIT)
 
   payload = {}
   headers = {
-    'NEON-API-VERSION': '2.8',
+    'NEON-API-VERSION': str(API_VERSION),
     'Content-Type': 'application/json'
   }
 
@@ -43,11 +48,12 @@ def get_accounts_all():
   return pd.merge(companies, individuals, on=["accountId", "firstName", "lastName", "email", "userType", "companyName"], how='outer', validate='one_to_one')
 
 def get_accounts_type(accountId):
+  logging.debug("Getting account type for " + accountId)
   url = API_BASE_URL + "/accounts/" + str(accountId) + "/memberships"
 
   payload = {}
   headers = {
-    'NEON-API-VERSION': '2.8',
+    'NEON-API-VERSION': str(API_VERSION),
     'Content-Type': 'application/json'
   }
 
@@ -62,15 +68,26 @@ def get_accounts_type(accountId):
       return membership["membershipLevel.name"]
   return "No Membership active"
 
-def get_all_membership_types():
-  accounts = get_accounts_all()
-
+def get_all_membership_types(accounts):
+  logging.info("Get all membership types")
+  membership_types = []
   for i, account in accounts.iterrows():
-    print(get_accounts_type(account.accountId))
+    logging.debug("Get Membership Type for " + str(account.accountId))
+    membership_types.append(get_accounts_type(account.accountId))
+  return membership_types
 
 def print_all_accounts_to_csv():
+  logging.info("Getting all accounts to csv")
   accounts = get_accounts_all()
+  membership_types = get_all_membership_types(accounts)
+  accounts["Membership Type"] = membership_types
   accounts.to_csv("out.csv", index=False, header=True)
 
-#print(get_accounts_type(7376))
-get_all_membership_types()
+def main():
+  logging.basicConfig(filename='NeonCRMAnalytics.log', level=logging.INFO)
+  logging.info('Main program started')
+  print_all_accounts_to_csv()
+  logging.info('Main Program finished')
+
+if __name__ == '__main__':
+  main()
