@@ -8,3 +8,5 @@
 */NeonCRMAnalytics.iml
 */vcs.xml
 .env
+.venv/
+local.env
