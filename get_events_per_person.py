@@ -9,13 +9,15 @@ load_dotenv()
 auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
 
 API_BASE_URL = "https://api.neoncrm.com/v2"
+API_LIMIT = 5000
+API_VERSION = "2.8"
 
 
 def get_accounts_companies():
-    url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=5000"
+    url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=" + str(API_LIMIT)
 
     payload = {}
-    headers = {"NEON-API-VERSION": "2.8", "Content-Type": "application/json"}
+    headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
 
     api_response = requests.request(
         "GET", url, headers=headers, data=payload, auth=auth
@@ -24,10 +26,10 @@ def get_accounts_companies():
 
 
 def get_accounts_individuals():
-    url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=5000"
+    url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=" + str(API_LIMIT)
 
     payload = {}
-    headers = {"NEON-API-VERSION": "2.8", "Content-Type": "application/json"}
+    headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
 
     api_response = requests.request(
         "GET", url, headers=headers, data=payload, auth=auth
@@ -51,7 +53,7 @@ def get_all_event_ids():
     url = API_BASE_URL + "/events?pageSize=5000"
 
     payload = {}
-    headers = {"NEON-API-VERSION": "2.8", "Content-Type": "application/json"}
+    headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
 
     api_response = requests.request(
         "GET", url, headers=headers, data=payload, auth=auth
@@ -66,7 +68,7 @@ def get_attendees(eventId):
     url = API_BASE_URL + "/events/" + str(eventId) + "/attendees"
 
     payload = {}
-    headers = {"NEON-API-VERSION": "2.8", "Content-Type": "application/json"}
+    headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
 
     api_response = requests.request(
         "GET", url, headers=headers, data=payload, auth=auth
