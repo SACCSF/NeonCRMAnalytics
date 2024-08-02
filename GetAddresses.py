@@ -17,7 +17,7 @@ load_dotenv()
 auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
 
 API_BASE_URL = "https://api.neoncrm.com/v2"
-API_LIMIT = 2
+API_LIMIT = 5000
 API_VERSION = "2.8"
 
 def get_accounts_companies():
