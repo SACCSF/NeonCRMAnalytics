@@ -51,8 +51,8 @@ def get_accounts_all():
                     on=["accountId", "firstName", "lastName", "email", "userType", "companyName"], how='outer',
                     validate='one_to_one')
 
-def get_accounts_creation_date(accountId, accountType):
-    logging.debug("Getting accounts creation date for " + str(accountId))
+def get_accounts_additional_information(accountId, accountType):
+    logging.debug("Getting accounts additional information for " + str(accountId))
     url = API_BASE_URL + "/accounts/" + str(accountId)
 
     payload = {}
@@ -62,16 +62,54 @@ def get_accounts_creation_date(accountId, accountType):
     }
 
     api_response = requests.request("GET", url, headers=headers, data=payload, auth=auth)
-    creation_date = pd.json_normalize(api_response.json())
+    additional_information = pd.json_normalize(api_response.json())
+
     if (accountType == "INDIVIDUAL"):
-        date = creation_date.get('individualAccount.timestamps.createdDateTime')
+        date = additional_information.get('individualAccount.timestamps.createdDateTime')
+        if(pd.isna(additional_information.get('individualAccount.primaryContact.gender')[0])):
+            gender = ''
+        else:
+            gender = additional_information.get('individualAccount.primaryContact.gender')[0]
+        if(pd.isna(additional_information.get('individualAccount.primaryContact.title')[0])):
+            title = ''
+        else:
+            title = additional_information.get('individualAccount.primaryContact.title')[0]
+        if(pd.isna(additional_information.get('individualAccount.primaryContact.employer'))):
+            employer = ''
+        else:
+            employer = additional_information.get('individualAccount.primaryContact.employer')
+        if(pd.isna(additional_information.get('individualAccount.primaryContact.origin'))):
+            origin = ''
+        else:
+            origin = additional_information.get('individualAccount.primaryContact.origin')
+        if(pd.isna(additional_information.get('individualAccount.primaryContact.originCategory'))):
+            originCategory = ''
+        else:
+            originCategory = additional_information.get('individualAccount.primaryContact.originCategory')
+        companyName = ''
+        '''
+        if(pd.isna(additional_information.get('individualAccount.company.name')[0])):
+            companyName = ''
+        else:
+            companyName = additional_information.get('individualAccount.company.name')[0]
+        '''
     else:
         logging.debug("No individual account")
     if (accountType == "COMPANY"):
-        date = creation_date.get('companyAccount.timestamps.createdDateTime')
+        date = additional_information.get('companyAccount.timestamps.createdDateTime')
+        gender = ''
+        title = ''
+        employer = ''
+        origin = ''
+        originCategory = ''
+        companyName = ''
     else:
         logging.debug("No company account")
-    return date[0].split('T')
+    creationDate = (date[0].split('T'))
+    # array: accoutntId, creationDate, gender, title, employer, origin, originCategory, companyName
+    logging.debug([accountId, creationDate[0], gender, title, employer, origin, originCategory, companyName])
+    return [accountId, creationDate[0], gender, title, employer, origin, originCategory, companyName]
+
 
 def get_accounts_type(accountId):
     logging.debug("Getting account type for " + accountId)
@@ -107,11 +145,20 @@ def print_all_accounts_to_csv():
     accounts = get_accounts_all()
     membership_types = get_all_membership_types(accounts)
     accounts["Membership Type"] = membership_types
-    creation_date = []
+    df = pd.DataFrame(columns=['accountId', 'creationDate', 'gender', 'title', 'employer',
+                               'origin', 'originCategory', 'companyName' ])
+
     for x, account in accounts.iterrows():
-        creation_date.append(get_accounts_creation_date(account['accountId'], account['userType'])[0])
-    accounts['accountCreationDate'] = creation_date
-    accounts.to_csv("out.csv", index=False, header=True)
+        additional_information = get_accounts_additional_information(account['accountId'], account['userType'])
+
+        df.loc[-1] = [additional_information[0], additional_information[1], additional_information[2],
+                      additional_information[3],additional_information[4], additional_information[5],
+                      additional_information[6], additional_information[7]]
+    # array: accoutntId, creationDate, gender, title, employer, origin, originCategory, companyName
+
+    dataexport = pd.merge(accounts, df, on=["accountId"], how='outer', validate='one_to_one')
+    dataexport.to_csv("out.csv", index=False, header=True)
+
 
 def main():
     logging.basicConfig(filename='NeonCRMAnalytics.log', level=logging.INFO)
@@ -121,3 +168,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
