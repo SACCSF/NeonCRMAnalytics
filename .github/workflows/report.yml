@@ -1,0 +1,22 @@
+name: Report
+
+on: [ push ]
+
+jobs:
+
+  create-envfile:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Create envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_DEBUG: false
+        API_API_KEY: ${{ secrets.API_API_KEY }}
+        API_ORG_ID: ${{ secrets.API_ORG_ID }}
+        GOOGLE_MAIL_APPPASSWORD: ${{ secrets.GOOGLE_MAIL_APPPASSWORD }}
+        GOOGLE_MAIL_ADDRESS: ${{ secrets.GOOGLE_MAIL_ADDRESS }}
+        file_name: .env
+        fail_on_empty: false
+        sort_keys: false
