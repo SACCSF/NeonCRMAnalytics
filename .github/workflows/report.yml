@@ -33,7 +33,7 @@ jobs:
 
     - name: Install requirements
       uses: actions/setup-python@v5
-        - run: pip install -r requirements.txt
+      run: pip install -r requirements.txt
 
     - name: Run Python script
       run: python Report.py
