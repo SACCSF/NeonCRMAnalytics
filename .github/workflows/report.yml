@@ -4,7 +4,7 @@ on: [ push ]
 
 jobs:
 
-  create-envfile:
+  run-report:
  
     runs-on: ubuntu-latest
  
@@ -20,7 +20,15 @@ jobs:
         file_name: .env
         fail_on_empty: false
         sort_keys: false
+        
+    - name: Automatic requirements.txt for Python Project
+      uses: ryan-rozario/pipreqs-action@master
 
+      # Put an example of mandatory inputs here
+      with:
+        PROJECT_PATH: .   #default is the root of the repository
+        REQUIREMENT_PATH: requirements.txt  #default is requirement.txt in the root of your repository
+ 
     - name: Checkout code
       uses: actions/checkout@v2
 
