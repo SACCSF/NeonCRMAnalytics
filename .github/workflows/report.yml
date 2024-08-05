@@ -30,4 +30,4 @@ jobs:
         python-version: '3.12'
     
     - name: Run Python script
-      run: python python.py
+      run: python Report.py
