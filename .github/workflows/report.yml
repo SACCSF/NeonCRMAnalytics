@@ -30,9 +30,3 @@ jobs:
         REQUIREMENT_PATH: .requirements.txt
         COMMIT_MESSAGE: "Added requirements.txt"
 
-    - name: Install requirements
-      uses: actions/setup-python@v5
-      run: pip install -r requirements.txt
-
-    - name: Run Python script
-      run: python Report.py
