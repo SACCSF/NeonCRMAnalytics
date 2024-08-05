@@ -13,7 +13,7 @@ jobs:
 
         with:
           PROJECT_PATH: .
-          REQUIREMENT_PATH: requirements.txt
+          REQUIREMENT_PATH: ./requirements.txt
           COMMIT_MESSAGE: "Updated requirements.txt"
 
   report:
