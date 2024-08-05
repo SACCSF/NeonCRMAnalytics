@@ -48,33 +48,12 @@ def get_accounts_individuals() -> pd.DataFrame:
     return pd.json_normalize(response["accounts"])
 
 
-def get_accounts_all() -> pd.DataFrame:
-    individuals = get_accounts_individuals()
-    companies = get_accounts_companies()
-    return pd.merge(
-        companies,
-        individuals,
-        on=["accountId", "firstName", "lastName", "email", "userType", "companyName"],
-        how="outer",
-        validate="one_to_one",
-    )
-
-
-def get_accounts_creation_date(accountId: int, accountType: str) -> list:
-    logging.debug("Getting accounts creation date for " + str(accountId))
+def get_accounts_additional_information(accountId, accountType):
+    logging.debug("Getting accounts additional information for " + str(accountId))
     url = API_BASE_URL + "/accounts/" + str(accountId)
 
     response = get_request(url)
-    creation_date = pd.json_normalize(response)
-    if accountType == "INDIVIDUAL":
-        date = creation_date.get("individualAccount.timestamps.createdDateTime")
-    else:
-        logging.debug("No individual account")
-    if accountType == "COMPANY":
-        date = creation_date.get("companyAccount.timestamps.createdDateTime")
-    else:
-        logging.debug("No company account")
-    return date[0].split("T")
+    additional_information = pd.json_normalize(response)
 
 
 def get_accounts_type(account: pd.Series) -> tuple:
@@ -130,7 +109,7 @@ def get_attendees(eventId: int) -> list:
     return list(set([attendee["registrantAccountId"] for attendee in attendees]))
 
 
-def add_events_to_person(df) -> pd.DataFrame:
+def add_events_to_account(df) -> pd.DataFrame:
     event_ids = get_all_event_ids()
     df["event_ids"] = df["accountId"].apply(lambda x: [])
 
@@ -144,37 +123,38 @@ def add_events_to_person(df) -> pd.DataFrame:
     return df
 
 
-def add_creation_date_to_person(df) -> pd.DataFrame:
+def add_creation_date_to_account(df) -> pd.DataFrame:
     creation_date = []
     for x, account in df.iterrows():
-        creation_date.append(
-            get_accounts_creation_date(account["accountId"], account["userType"])[0]
+        additional_information = get_accounts_additional_information(
+            account["accountId"], account["userType"]
         )
+
     df["accountCreationDate"] = creation_date
     return df
 
 
-def add_membership_type_to_person(df) -> pd.DataFrame:
+def add_membership_type_to_account(df) -> pd.DataFrame:
     membership_types = get_all_membership_types(df)
     df["Membership Type"] = df["accountId"].map(membership_types)
     return df
 
 
+def add_fields_to_account(account: pd.DataFrame) -> pd.DataFrame:
+    account = add_membership_type_to_account(account)
+    account = add_events_to_account(account)
+    account = add_creation_date_to_account(account)
+
+    return account
+
+
 def print_all_accounts_to_csv() -> None:
     logging.info("Getting all accounts to csv")
-    accounts = get_accounts_all()
+    individuals = get_accounts_individuals()
+    companies = get_accounts_companies()
 
-    accounts = add_membership_type_to_person(accounts)
-    accounts = add_creation_date_to_person(accounts)
-    accounts = add_events_to_person(accounts)
-
-    path_to_csv = "out.csv"
-    counter = 0
-    while os.path.exists(path_to_csv):
-        path_to_csv = f"out{counter}.csv"
-        counter += 1
-
-    accounts.to_csv("out.csv", index=False, header=True)
+    individuals = add_fields_to_account(individuals)
+    companies = add_fields_to_account(companies)
 
 
 def main():
