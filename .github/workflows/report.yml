@@ -22,10 +22,9 @@ jobs:
         sort_keys: false
 
     - name: Generate requirements.txt
-    - uses: actions/checkout@master
+      uses: actions/checkout@master
     - name: Check requirements.txt
       uses: ekvanox/pipreqs-action@master
-
       with:
         PROJECT_PATH: .
         REQUIREMENT_PATH: .requirements.txt
