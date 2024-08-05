@@ -22,5 +22,5 @@ jobs:
         sort_keys: false
 
     - name: Run Report
-      run: python ${{ env.DEVOPS_DIR }}/Report.py
+      run: python Report.py
       shell: sh
