@@ -30,7 +30,7 @@ jobs:
 
     - name: Read .env file
       id: getversion
-      run: echo "env=$(cat .env)" >> $GITHUB_OUTPUT
+      run: echo ".env=$(cat .env)" >> $GITHUB_OUTPUT
 
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
