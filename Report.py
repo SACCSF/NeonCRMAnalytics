@@ -53,9 +53,9 @@ def send_email(subject, body, sender, recipients, password):
     logging.info("E-Mail message has been sent!")
 
 def main():
-    #check_content("merged.csv")
+    # check_content("merged.csv")
 
-    check_dulicates("merged.csv")
+    # check_dulicates("merged.csv")
 
     # Send email
     subject = "Swiss Chamber Report"
@@ -63,7 +63,6 @@ def main():
     sender = os.getenv("GOOGLE_MAIL_ADDRESS")
     recipients = ["flavio.waser@stud.hslu.ch"]
     #recipients = ["flavio.waser@stud.hslu.ch", "nicola.hermann@stud.hslu.ch","alex.Iruthayanesan@stud.hslu.ch"]
-    #send_email(subject, body, sender, recipients, os.getenv("mail_password"))
     send_email(subject, body, sender, recipients, os.getenv("GOOGLE_MAIL_APPPASSWORD"))
 
 
