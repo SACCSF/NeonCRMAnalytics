@@ -60,11 +60,11 @@ def main():
     # Send email
     subject = "Swiss Chamber Report"
     body = "Test"
-    sender = "saccsf.neon@gmail.com"
+    sender = os.getenv("GOOGLE_MAIL_ADDRESS")
     recipients = ["flavio.waser@stud.hslu.ch"]
     #recipients = ["flavio.waser@stud.hslu.ch", "nicola.hermann@stud.hslu.ch","alex.Iruthayanesan@stud.hslu.ch"]
     #send_email(subject, body, sender, recipients, os.getenv("mail_password"))
-    send_email(subject, body, sender, recipients, os.getenv("mail_password"))
+    send_email(subject, body, sender, recipients, os.getenv("GOOGLE_MAIL_APPPASSWORD"))
 
 
 if __name__ == '__main__':
