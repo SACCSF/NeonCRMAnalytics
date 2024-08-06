@@ -1,7 +1,7 @@
 name: requirements.yml
 on: [push]
 jobs:
-  build:
+  get-requirements:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -13,9 +13,28 @@ jobs:
           REQUIREMENT_PATH: requirements.txt
           COMMIT_MESSAGE: "Added requirements.txt"
 
+  run-report:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip' # caching pip dependencies
       - run: pip install -r requirements.txt
+
+      - name: Create envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DEBUG: false
+          API_API_KEY: ${{ secrets.API_API_KEY }}
+          API_ORG_ID: ${{ secrets.API_ORG_ID }}
+        GOOGLE_MAIL_APPPASSWORD: ${{ secrets.GOOGLE_MAIL_APPPASSWORD }}
+        GOOGLE_MAIL_ADDRESS: ${{ secrets.GOOGLE_MAIL_ADDRESS }}
+        file_name: .env
+        fail_on_empty: false
+        sort_keys: false
+
+      - name: Run Report
+        run: python Report.py
+        shell: sh
