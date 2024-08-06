@@ -1,7 +1,7 @@
 name: send-mail.yml
 on:
   schedule:
-    - cron: '30 20 * * *'
+    - cron: '30 16 * * *'
 
 jobs:
   send-report:
