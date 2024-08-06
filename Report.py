@@ -71,7 +71,7 @@ def main():
     body = "Test"
     recipients = ["flavio.waser@stud.hslu.ch"]
     #recipients = ["flavio.waser@stud.hslu.ch", "nicola.hermann@stud.hslu.ch","alex.Iruthayanesan@stud.hslu.ch"]
-    send_email(subject, body, recipients)
+    # send_email(subject, body, recipients)
 
 if __name__ == '__main__':
     main()
