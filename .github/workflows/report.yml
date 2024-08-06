@@ -1,9 +1,8 @@
-name: Report
+name: Create Report
 
 on: [ push ]
 
 jobs:
-
   get-requirements:
     runs-on: ubuntu-latest
     steps:
@@ -33,9 +32,9 @@ jobs:
         sort_keys: false
 
     - name: Install requirements
-      run: pip install -r requirements.txt
+      run: pip install -r /requirements.txt
       shell: sh
 
     - name: Run Report
-      run: python Report.py
+      run: python ./Report.py
       shell: sh
