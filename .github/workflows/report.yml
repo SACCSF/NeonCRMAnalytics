@@ -52,7 +52,7 @@ jobs:
           password: ${{SECRETS.GOOGLE_MAIL_APPPASSWORD}}
           subject: SACCSF Report
           to: flavio.waser@stud.hslu.ch
-          cc: ce20b112@smail.iitm.ac.in
+          # cc:
           from: Swiss-American Chamber of Commerce San Francisco Chapter
           #html_body: file://temp.html
           secure: true
