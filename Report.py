@@ -2,6 +2,7 @@ import logging
 import logging.config
 import os, ssl
 import smtplib
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
@@ -57,6 +58,7 @@ def send_email(subject, body, recipients):
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(os.getenv("GOOGLE_MAIL_ADDRESS"), os.getenv("GOOGLE_MAIL_APPPASSWORD"))
+        time.sleep(3)
         server.sendmail(os.getenv("GOOGLE_MAIL_ADDRESS"), recipients, msg.as_string())
 
 def main():
