@@ -1,12 +1,11 @@
 name: send-mail.yml
 on:
   schedule:
-    - cron: '30 5 * * *'
+    - cron: '30 20 * * *'
 
 jobs:
   send-report:
     runs-on: ubuntu-latest
-    needs: report
     steps:
       - name: Send mail
         uses: dawidd6/action-send-mail@v3
