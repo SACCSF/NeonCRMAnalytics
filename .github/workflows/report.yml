@@ -38,9 +38,9 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-   # - name: Create local changes
-   #   run: |
-   #     python ./extract_crm_to_csv.py
+    - name: Create local changes
+      run: |
+        python ./extract_crm_to_csv.py
     - name: Commit files
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -53,18 +53,6 @@ jobs:
         branch: ${{ github.ref }}
 
 
-    #- name: Run Report
-    #  run: python ./Report.py
-    #  shell: sh
-
-  upload-data:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload CSV companies to Spreadsheet
-        uses: canonical-web-and-design/csv-to-google-spreadsheet@1.0.0
-        with:
-          csv_path: ./companies.csv
-          spreadsheet_id: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
-          worksheet: 0
-          google_service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          google_service_account_private_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATEKEY }}
+    - name: Run Report
+      run: python ./Report.py
+      shell: sh
