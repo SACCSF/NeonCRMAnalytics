@@ -10,3 +10,4 @@
 .env
 .venv/
 local.env
+.DS_STORE
