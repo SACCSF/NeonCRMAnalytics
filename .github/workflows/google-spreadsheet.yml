@@ -3,10 +3,12 @@ on:
   [push]
 jobs:
   upload:
-      uses: canonical-web-and-design/csv-to-google-spreadsheet
-      with:
-        csv_path: companies.csv
-        spreadsheet_id: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
-        worksheet: 0
-        google_service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-        google_service_account_private_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATEKEY }}
+    runs-on: ubuntu-latest
+    steps: Upload Data
+      - uses: canonical-web-and-design/csv-to-google-spreadsheet
+        with:
+          csv_path: companies.csv
+          spreadsheet_id: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
+          worksheet: 0
+          google_service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          google_service_account_private_key: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATEKEY }}
