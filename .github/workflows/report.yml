@@ -60,8 +60,8 @@ jobs:
   upload-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Upload CSV to Spreadsheet
-        uses: canonical-web-and-design/csv-to-google-spreadsheet
+      - name: Upload CSV companies to Spreadsheet
+        uses: canonical-web-and-design/csv-to-google-spreadsheet@1.0.0
         with:
           csv_path: ./companies.csv
           spreadsheet_id: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
