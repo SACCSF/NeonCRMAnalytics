@@ -1,0 +1,26 @@
+name: send-mail.yml
+on:
+  schedule:
+    - cron: '30 5 * * *'
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    needs: report
+    steps:
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{SECRETS.GOOGLE_MAIL_ADDRESS}}
+          password: ${{SECRETS.GOOGLE_MAIL_APPPASSWORD}}
+          subject: SACCSF Report
+          to: flavio.waser@stud.hslu.ch, nicola.hermann@stud.hslu.ch, alex.iruthayanesan@stud.hslu.ch
+          # cc:
+          from: Swiss-American Chamber of Commerce San Francisco Chapter
+          #html_body: file://temp.html
+          secure: true
+          ignore_cert: true
+          convert_markdown: true
+          priority: low

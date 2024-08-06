@@ -9,7 +9,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Check requirements
         uses: ekvanox/pipreqs-action@master
-
         with:
           PROJECT_PATH: .
           REQUIREMENT_PATH: ./requirements.txt
@@ -19,43 +18,41 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-requirements
     steps:
-    - name: 'Create env file'
-      run: |
-        touch .env
-        echo API_API_KEY=${{ secrets.API_API_KEY }} >> .env
-        echo API_ORG_ID=${{ secrets.API_ORG_ID }} >> .env
-        echo GOOGLE_MAIL_APPPASSWORD: ${{ secrets.GOOGLE_MAIL_APPPASSWORD }} >> .env
-        echo GOOGLE_MAIL_ADDRESS: ${{ secrets.GOOGLE_MAIL_ADDRESS }} >> .env
-        cat .env
-
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
         python-version: '3.12'
         cache: 'pip' # caching pip dependencies
-    - run: pip install -r ./requirements.txt
+
+    - name: Install reqirements
+      run: pip install -r ./requirements.txt
+
+    - name: 'Create env file'
+      run: |
+        touch .env
+        echo org_id=${{ secrets.API_ORG_ID }} >> .env
+        echo api_key=${{ secrets.API_API_KEY }} >> .env
+        cat .env
+
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+    - name: Create local changes
+      run: |
+        python ./exctract_crm_to_csv.py
+    - name: Commit files
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -a -m "Add automatic reports"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ env.TOKEN }}
+        branch: ${{ github.ref }}
+
 
     - name: Run Report
       run: python ./Report.py
       shell: sh
-
-  send-report:
-    runs-on: ubuntu-latest
-    needs: report
-    steps:
-      - name: Send mail
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{SECRETS.GOOGLE_MAIL_ADDRESS}}
-          password: ${{SECRETS.GOOGLE_MAIL_APPPASSWORD}}
-          subject: SACCSF Report
-          to: flavio.waser@stud.hslu.ch, nicola.hermann@stud.hslu.ch, alex.iruthayanesan@stud.hslu.ch
-          # cc:
-          from: Swiss-American Chamber of Commerce San Francisco Chapter
-          #html_body: file://temp.html
-          secure: true
-          ignore_cert: true
-          convert_markdown: true
-          priority: low
