@@ -31,9 +31,12 @@ jobs:
         fail_on_empty: false
         sort_keys: false
 
-    - name: Install requirements
-      run: pip install -r ./requirements.txt
-      shell: sh
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        cache: 'pip' # caching pip dependencies
+    - run: pip install -r ./requirements.txt
 
     - name: Run Report
       run: python ./Report.py
