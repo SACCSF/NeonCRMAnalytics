@@ -1,13 +1,15 @@
 name: Upload to Google Spreadsheet
 on:
   [push]
+
 jobs:
-  upload:
+  upload-data:
     runs-on: ubuntu-latest
-    steps: Upload Data
-      - uses: canonical-web-and-design/csv-to-google-spreadsheet
+    steps:
+      - name: Upload CSV to Spreadsheet
+        uses: canonical-web-and-design/csv-to-google-spreadsheet
         with:
-          csv_path: companies.csv
+          csv_path: ./companies.csv
           spreadsheet_id: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
           worksheet: 0
           google_service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
