@@ -28,6 +28,10 @@ jobs:
         echo GOOGLE_MAIL_ADDRESS: ${{ secrets.GOOGLE_MAIL_ADDRESS }} >> .env
         cat .env
 
+    - name: Read .env file
+      id: getversion
+      run: echo "env=$(cat .env)" >> $GITHUB_OUTPUT
+
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
