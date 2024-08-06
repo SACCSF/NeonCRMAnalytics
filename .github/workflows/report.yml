@@ -61,7 +61,7 @@ jobs:
         # Optional whether this connection use TLS (default is true if server_port is 465)
         secure: true
         # Optional (recommended) mail server username:
-        username: ${{secrets.GOOGLE_MAIL_ADDRESS}}
+        username: saccsf.neon@gmail.com
         # Optional (recommended) mail server password:
         password: ${{secrets.GOOGLE_MAIL_APPPASSWORD}}
         # Required mail subject:
@@ -79,9 +79,9 @@ jobs:
         # Optional blind carbon copy recipients:
         # bcc: r2d2@example.com,hansolo@example.com
         # Optional recipient of the email response:
-        reply_to: ${{secrets.GOOGLE_MAIL_ADDRESS}}
+        reply_to: saccsf.neon@gmail.com
         # Optional Message ID this message is replying to:
-        in_reply_to: <${{secrets.GOOGLE_MAIL_ADDRESS}}>
+        in_reply_to: <saccsf.neon@gmail.com>
         # Optional unsigned/invalid certificates allowance:
         ignore_cert: true
         # Optional converting Markdown to HTML (set content_type to text/html too):
