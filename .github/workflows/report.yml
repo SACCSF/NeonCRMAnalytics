@@ -51,7 +51,7 @@ jobs:
           username: ${{SECRETS.GOOGLE_MAIL_ADDRESS}}
           password: ${{SECRETS.GOOGLE_MAIL_APPPASSWORD}}
           subject: SACCSF Report
-          to: flavio.waser@stud.hslu.ch
+          to: flavio.waser@stud.hslu.ch, nicola.hermann@stud.hslu.ch, alex.iruthayanesan@stud.hslu.ch
           # cc:
           from: Swiss-American Chamber of Commerce San Francisco Chapter
           #html_body: file://temp.html
