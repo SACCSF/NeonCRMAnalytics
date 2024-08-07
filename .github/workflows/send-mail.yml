@@ -1,4 +1,4 @@
-name: send-mail.yml
+name: Send Mail
 on:
   schedule:
     - cron: '30 16 * * *'
