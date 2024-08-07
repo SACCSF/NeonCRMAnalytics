@@ -1,8 +1,11 @@
 import logging
 import logging.config
-import os
+import os, ssl
 import smtplib
+import time
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.header import Header
 from dotenv import load_dotenv
 import pandas as pd
 
@@ -42,30 +45,33 @@ def check_dulicates(csv_file):
     duplicatedRows = csv[csv.duplicated(['firstName', 'lastName', 'email'])]
     duplicatedRows.to_csv("Duplicates.csv", index=False)
 
-def send_email(subject, body, sender, recipients, password):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = sender
+def send_email(subject, body, recipients):
+    msg = MIMEMultipart()
+    msg['From'] = os.getenv("GOOGLE_MAIL_ADDRESS")
     msg['To'] = ', '.join(recipients)
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
-       smtp_server.login(sender, password)
-       smtp_server.sendmail(sender, recipients, msg.as_string())
-    logging.info("E-Mail message has been sent!")
+    msg['Subject'] = Header(subject, 'utf-8').encode()
+
+    msg_content = MIMEText(body, 'plain', 'utf-8')
+    msg.attach(msg_content)
+
+    # Create secure connection with server and send email
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(os.getenv("GOOGLE_MAIL_ADDRESS"), os.getenv("GOOGLE_MAIL_APPPASSWORD"))
+        time.sleep(3)
+        server.sendmail(os.getenv("GOOGLE_MAIL_ADDRESS"), recipients, msg.as_string())
 
 def main():
-    #check_content("merged.csv")
+    # check_content("merged.csv")
 
-    check_dulicates("merged.csv")
+    # check_dulicates("merged.csv")
 
     # Send email
     subject = "Swiss Chamber Report"
     body = "Test"
-    sender = os.getenv("GOOGLE_MAIL_ADDRESS")
     recipients = ["flavio.waser@stud.hslu.ch"]
     #recipients = ["flavio.waser@stud.hslu.ch", "nicola.hermann@stud.hslu.ch","alex.Iruthayanesan@stud.hslu.ch"]
-    #send_email(subject, body, sender, recipients, os.getenv("mail_password"))
-    send_email(subject, body, sender, recipients, os.getenv("GOOGLE_MAIL_APPPASSWORD"))
-
+    # send_email(subject, body, recipients)
 
 if __name__ == '__main__':
     main()
