@@ -39,6 +39,7 @@ def get_accounts_companies() -> pd.DataFrame:
     url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=" + str(API_LIMIT)
 
     response = get_request(url)
+    logging.debug(response)
     return (pd.json_normalize(response["accounts"]))
 
 
