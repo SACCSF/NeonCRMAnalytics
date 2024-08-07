@@ -45,22 +45,6 @@ def check_dulicates(csv_file):
     duplicatedRows = csv[csv.duplicated(['firstName', 'lastName', 'email'])]
     duplicatedRows.to_csv("Duplicates.csv", index=False)
 
-def send_email(subject, body, recipients):
-    msg = MIMEMultipart()
-    msg['From'] = os.getenv("GOOGLE_MAIL_ADDRESS")
-    msg['To'] = ', '.join(recipients)
-    msg['Subject'] = Header(subject, 'utf-8').encode()
-
-    msg_content = MIMEText(body, 'plain', 'utf-8')
-    msg.attach(msg_content)
-
-    # Create secure connection with server and send email
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(os.getenv("GOOGLE_MAIL_ADDRESS"), os.getenv("GOOGLE_MAIL_APPPASSWORD"))
-        time.sleep(3)
-        server.sendmail(os.getenv("GOOGLE_MAIL_ADDRESS"), recipients, msg.as_string())
-
 def main():
     # check_content("merged.csv")
 
