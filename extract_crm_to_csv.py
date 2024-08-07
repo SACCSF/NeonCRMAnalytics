@@ -16,7 +16,7 @@ logging.config.fileConfig("NeonCRMAnalytics.log")
 
 # loading variables from .env file
 load_dotenv()
-auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
+auth = HTTPBasicAuth(os.getenv("API_ORG_ID"), os.getenv("API_API_KEY"))
 
 # Configurable global variables
 API_BASE_URL = "https://api.neoncrm.com/v2"
