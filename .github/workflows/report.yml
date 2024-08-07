@@ -36,6 +36,16 @@ jobs:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
+    - name: Remove Company File
+      uses: JesseTG/rm@v1.0.3
+      with:
+        path: ./companies.csv
+
+    - name: Remove Individuals File
+      uses: JesseTG/rm@v1.0.3
+      with:
+        path: ./individuals.csv
+
     - name: 'Create env file'
       run: |
         touch /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
@@ -51,10 +61,9 @@ jobs:
       run: python ./create_report.py
       shell: sh
 
-    - uses: actions/checkout@v4
     - uses: actions4git/setup-git@v1
     - run: git add .
-    - run: git commit --message 'Auto report'
+    - run: git commit --message 'Automated report'
     - run: git push origin main --force
 
   send-report:
