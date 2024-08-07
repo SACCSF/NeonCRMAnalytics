@@ -39,14 +39,14 @@ def get_accounts_companies() -> pd.DataFrame:
     url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=" + str(API_LIMIT)
 
     response = get_request(url)
-    return pd.json_normalize(response["accounts"])
+    return (pd.json_normalize(response["accounts"]))
 
 
 def get_accounts_individuals() -> pd.DataFrame:
     url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=" + str(API_LIMIT)
 
     response = get_request(url)
-    return pd.json_normalize(response["accounts"])
+    return (pd.json_normalize(response["accounts"]))
 
 
 def get_accounts_additional_information(
@@ -209,7 +209,7 @@ def filter_individuals(individuals: pd.DataFrame) -> pd.DataFrame:
         "primaryContact.gender.name",
         "individualTypes",
     ]
-    return individuals.drop(columns=to_drop)
+    return (individuals.drop(columns=to_drop))
 
 
 def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
@@ -248,7 +248,7 @@ def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
         "companyTypes",
     ]
 
-    return companies.drop(columns=to_drop)
+    return (companies.drop(columns=to_drop))
 
 
 def add_fields_to_account(account: pd.DataFrame, actual) -> pd.DataFrame:
