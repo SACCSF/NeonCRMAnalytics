@@ -18,6 +18,8 @@ logging.config.fileConfig("NeonCRMAnalytics.log")
 load_dotenv()
 auth = HTTPBasicAuth(os.getenv("API_ORG_ID"), os.getenv("API_API_KEY"))
 
+logging.debug(os.getenv("API_ORG_ID"))
+
 # Configurable global variables
 API_BASE_URL = "https://api.neoncrm.com/v2"
 API_LIMIT = 5000
