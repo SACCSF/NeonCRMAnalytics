@@ -30,8 +30,8 @@ jobs:
     - name: 'Create env file'
       run: |
         touch .env
-        echo org_id=${{ secrets.API_ORG_ID }} >> .env
-        echo api_key=${{ secrets.API_API_KEY }} >> .env
+        echo API_ORG_ID=${{ secrets.API_ORG_ID }} >> .env
+        echo API_API_KEY=${{ secrets.API_API_KEY }} >> .env
         cat .env
 
     - uses: actions/checkout@v4
