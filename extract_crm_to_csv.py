@@ -46,7 +46,7 @@ def get_accounts_individuals() -> pd.DataFrame:
     url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=" + str(API_LIMIT)
 
     response = get_request(url)
-    print(response)
+    logging.debug(response)
     return (pd.json_normalize(response["accounts"]))
 
 
