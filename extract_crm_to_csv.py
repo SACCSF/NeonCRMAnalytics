@@ -22,7 +22,7 @@ auth = HTTPBasicAuth(os.getenv("org_id"), os.getenv("api_key"))
 API_BASE_URL = "https://api.neoncrm.com/v2"
 API_LIMIT = 5000
 API_VERSION = "2.8"
-MAX_WORKERS = 4
+MAX_WORKERS = 2
 
 
 def get_request(url: str) -> dict:
@@ -83,13 +83,14 @@ def get_accounts_type(account: pd.Series) -> tuple:
     for i, membership in memberships.iterrows():
         date_object = datetime.strptime(membership.termEndDate, "%Y-%m-%d").date()
         if today < date_object:
-            return (account_id, membership["membershipLevel.name"])
-    return (account_id, "No Membership active")
+            return (account_id, membership["membershipLevel.name"], membership["fee"])
+    return (account_id, "No Membership active", "0.0")
 
 
 def get_all_membership_types(accounts: pd.DataFrame) -> dict:
     logging.info("Get all membership types")
     membership_types = {}
+    fees = {}
     # Get membership types concurrently
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {
@@ -97,10 +98,11 @@ def get_all_membership_types(accounts: pd.DataFrame) -> dict:
             for _, account in accounts.iterrows()
         }
         for future in concurrent.futures.as_completed(futures):
-            id, account_type = future.result()
+            id, account_type, fee = future.result()
             membership_types[id] = account_type
+            fees[id] = fee
 
-    return membership_types
+    return (membership_types, fees)
 
 
 def get_all_event_ids() -> list:
@@ -125,7 +127,7 @@ def get_attendees(eventId: int) -> list:
 
 def add_events_to_account(df) -> pd.DataFrame:
     event_ids = get_all_event_ids()
-    df["event_ids"] = df["accountId"].apply(lambda x: [])
+    df.loc[:, "event_ids"] = [[] for _ in range(len(df))]
 
     for event_id in event_ids:
         attendees = get_attendees(event_id)
@@ -170,15 +172,97 @@ def add_creation_date_to_account(df, actual_type):
 
 
 def add_membership_type_to_account(df) -> pd.DataFrame:
-    membership_types = get_all_membership_types(df)
+    membership_types, fees = get_all_membership_types(df)
     df["Membership Type"] = df["accountId"].map(membership_types)
+    df["Fee"] = df["accountId"].map(fees)
     return df
+
+
+def filter_non_active_accounts(df) -> pd.DataFrame:
+    return df[df["Membership Type"] != "No Membership active"]
+
+
+def filter_individuals(individuals: pd.DataFrame) -> pd.DataFrame:
+
+    to_drop = [
+        "noSolicitation",
+        "accountCustomFields",
+        "sendSystemEmail",
+        "accountCurrentMembershipStatus",
+        "primaryContact.contactId",
+        "primaryContact.firstName",
+        "primaryContact.middleName",
+        "primaryContact.lastName",
+        "primaryContact.salutation",
+        "primaryContact.preferredName",
+        "primaryContact.deceased",
+        "primaryContact.department",
+        "primaryContact.title",
+        "generosityIndicator.indicator",
+        "generosityIndicator.affinity",
+        "generosityIndicator.recency",
+        "generosityIndicator.frequency",
+        "generosityIndicator.monetaryValue",
+        "company.name",
+        "login.username",
+        "primaryContact.gender.code",
+        "primaryContact.gender.name",
+        "individualTypes",
+    ]
+    return individuals.drop(columns=to_drop)
+
+
+def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
+    to_drop = [
+        "firstName",
+        "lastName",
+        "noSolicitation",
+        "accountCustomFields",
+        "sendSystemEmail",
+        "accountCurrentMembershipStatus",
+        "name",
+        "primaryContact.contactId",
+        "primaryContact.firstName",
+        "primaryContact.middleName",
+        "primaryContact.lastName",
+        "primaryContact.prefix",
+        "primaryContact.suffix",
+        "primaryContact.salutation",
+        "primaryContact.preferredName",
+        "primaryContact.email1",
+        "primaryContact.deceased",
+        "primaryContact.department",
+        "primaryContact.title",
+        "primaryContact.primaryContact",
+        "primaryContact.currentEmployer",
+        "primaryContact.startDate",
+        "primaryContact.addresses",
+        "generosityIndicator.indicator",
+        "generosityIndicator.affinity",
+        "generosityIndicator.recency",
+        "generosityIndicator.frequency",
+        "generosityIndicator.monetaryValue",
+        "login.username",
+        "primaryContact.gender.code",
+        "primaryContact.gender.name",
+        "companyTypes",
+    ]
+
+    return companies.drop(columns=to_drop)
 
 
 def add_fields_to_account(account: pd.DataFrame, actual) -> pd.DataFrame:
     account = add_membership_type_to_account(account)
+    account = filter_non_active_accounts(account)
     account = add_events_to_account(account)
     account = add_creation_date_to_account(account, actual)
+
+    if actual == "INDIVIDUAL":
+        account = filter_individuals(account)
+    elif actual == "COMPANY":
+        account = filter_companies(account)
+    else:
+        raise ValueError("Invalid account type")
 
     return account
 
