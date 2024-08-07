@@ -82,7 +82,7 @@ def get_accounts_type(account: pd.Series) -> tuple:
 
     response = get_request(url)
     today = date.today()
-    memberships = pd.json_normalize(response["memberships"])
+    memberships = (pd.json_normalize(response["memberships"]))
 
     for i, membership in memberships.iterrows():
         date_object = datetime.strptime(membership.termEndDate, "%Y-%m-%d").date()
