@@ -27,17 +27,18 @@ jobs:
     - name: Install reqirements
       run: pip install -r ./requirements.txt
 
-    - name: 'Create env file'
-      run: |
-        touch .env
-        echo API_ORG_ID=${{ secrets.API_ORG_ID }} >> .env
-        echo API_API_KEY=${{ secrets.API_API_KEY }} >> .env
-        cat .env
-
     - uses: actions/checkout@v4
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+
+    - name: 'Create env file'
+      run: |
+        touch /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
+        echo API_ORG_ID=${{ secrets.API_ORG_ID }} >> /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
+        echo API_API_KEY=${{ secrets.API_API_KEY }} >> /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
+        cat /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
+
     - name: Create local changes
       run: |
         python ./extract_crm_to_csv.py
