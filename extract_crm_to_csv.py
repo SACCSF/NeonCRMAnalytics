@@ -25,15 +25,20 @@ API_BASE_URL = "https://api.neoncrm.com/v2"
 API_LIMIT = 5000
 API_VERSION = "2.8"
 MAX_WORKERS = 2
+API_TIMEOUT = 0.5
 
 
 def get_request(url: str) -> dict:
     payload = {}
     headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
-
+    t1 = time.time()
     api_response = requests.request(
         "GET", url, headers=headers, data=payload, auth=auth
     )
+    t2 = time.time()
+    duration = t2 - t1
+    if duration < API_TIMEOUT:
+        time.sleep(API_TIMEOUT - (duration))
     return api_response.json()
 
 
