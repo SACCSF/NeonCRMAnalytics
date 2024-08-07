@@ -11,7 +11,6 @@ This repo contains a Python program for analyzing the data of a NEON CRM. The da
 ## Automations
 
 [![Create Report](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/report.yml/badge.svg)](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/report.yml)
-[![Send Report](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/send-mail.yml/badge.svg?event=schedule)](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/send-mail.yml)
 ## Authors
 
 - [@nicola-hermann](https://github.com/nicola-hermann)

@@ -61,10 +61,7 @@ jobs:
       run: python ./create_report.py
       shell: sh
 
-    - uses: actions4git/setup-git@v1
-    - run: git add .
-    - run: git commit --message 'Automated report'
-    - run: git push origin main --force
+    - uses: actions4git/add-commit-push@v1
 
   send-report:
     runs-on: ubuntu-latest
