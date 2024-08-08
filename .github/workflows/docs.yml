@@ -1,9 +1,9 @@
 name: Docs
 
 # build the documentation whenever there are new commits on main
-on:
-  schedule:
-    - cron: '30 16 * * *'
+on: [push]
+  #schedule:
+  #  - cron: '30 16 * * *'
 
 # security: restrict permissions for CI jobs.
 permissions:
@@ -12,7 +12,8 @@ permissions:
 jobs:
   # Build the documentation and upload the static HTML files as an artifact.
   build:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
