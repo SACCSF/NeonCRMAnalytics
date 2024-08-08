@@ -3,7 +3,7 @@ name: Docs
 # build the documentation whenever there are new commits on main
 on: [push]
   # schedule:
-  #  - cron: '30 16 * * *'
+  #  - cron: '30 16 * * *'asdf
 
 # security: restrict permissions for CI jobs.
 permissions:
