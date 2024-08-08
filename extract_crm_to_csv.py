@@ -29,6 +29,9 @@ API_TIMEOUT = 0.5
 
 
 def get_request(url: str) -> dict:
+    """
+    Get request to the NeonCRM API with a timeout of seconds
+    """
     payload = {}
     headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
     t1 = time.time()
@@ -47,7 +50,7 @@ def get_accounts_companies() -> pd.DataFrame:
 
     response = get_request(url)
     logging.debug(response)
-    return (pd.json_normalize(response["accounts"]))
+    return pd.json_normalize(response["accounts"])
 
 
 def get_accounts_individuals() -> pd.DataFrame:
@@ -55,7 +58,7 @@ def get_accounts_individuals() -> pd.DataFrame:
 
     response = get_request(url)
     logging.debug(response)
-    return (pd.json_normalize(response["accounts"]))
+    return pd.json_normalize(response["accounts"])
 
 
 def get_accounts_additional_information(
@@ -87,7 +90,7 @@ def get_accounts_type(account: pd.Series) -> tuple:
 
     response = get_request(url)
     today = date.today()
-    memberships = (pd.json_normalize(response["memberships"]))
+    memberships = pd.json_normalize(response["memberships"])
 
     for i, membership in memberships.iterrows():
         date_object = datetime.strptime(membership.termEndDate, "%Y-%m-%d").date()
@@ -139,6 +142,7 @@ def add_events_to_account(df) -> pd.DataFrame:
     df.loc[:, "event_ids"] = [[] for _ in range(len(df))]
 
     for event_id in event_ids:
+        logging.debug("Getting attendees for event " + str(event_id))
         attendees = get_attendees(event_id)
         for attendee in attendees:
             df.loc[df["accountId"] == attendee, "event_ids"] = df.loc[
@@ -164,9 +168,6 @@ def add_creation_date_to_account(df, actual_type):
         ]
 
     all_information = pd.concat(results, ignore_index=True)
-
-    # Discard all columns that only have NaN or None values
-    all_information = all_information.dropna(axis=1, how="all")
 
     # Merge all information with the original dataframe by accountId
     df = pd.merge(
@@ -218,7 +219,11 @@ def filter_individuals(individuals: pd.DataFrame) -> pd.DataFrame:
         "primaryContact.gender.name",
         "individualTypes",
     ]
-    return (individuals.drop(columns=to_drop))
+    # Filter columns that are no in companies.columns
+    availlable_columns = individuals.columns
+    to_drop = [column for column in to_drop if column in availlable_columns]
+    individuals.drop(columns=to_drop, inplace=True)
+    return individuals.dropna(axis=1, how="all")
 
 
 def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
@@ -256,8 +261,17 @@ def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
         "primaryContact.gender.name",
         "companyTypes",
     ]
+    # Filter columns that are no in companies.columns
+    availlable_columns = companies.columns
+    to_drop = [column for column in to_drop if column in availlable_columns]
+    companies.drop(columns=to_drop, inplace=True)
 
-    return (companies.drop(columns=to_drop))
+    return companies.dropna(axis=1, how="all")
+
+
+def add_export_date(df) -> pd.DataFrame:
+    df["Export Date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return df
 
 
 def add_fields_to_account(account: pd.DataFrame, actual) -> pd.DataFrame:
@@ -272,6 +286,8 @@ def add_fields_to_account(account: pd.DataFrame, actual) -> pd.DataFrame:
         account = filter_companies(account)
     else:
         raise ValueError("Invalid account type")
+
+    account = add_export_date(account)
 
     return account
 
