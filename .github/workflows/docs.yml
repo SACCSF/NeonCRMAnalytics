@@ -2,12 +2,8 @@ name: Docs
 
 # build the documentation whenever there are new commits on main
 on:
-  push:
-    branches:
-      - main
-    # Alternative: only build for tags.
-    # tags:
-    #   - '*'
+  schedule:
+    - cron: '30 16 * * *'
 
 # security: restrict permissions for CI jobs.
 permissions:
