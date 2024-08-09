@@ -11,3 +11,6 @@
 .venv/
 local.env
 .DS_STORE
+*.csv
+*.xlsx
+/docs
