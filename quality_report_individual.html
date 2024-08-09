@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaN Values Report</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .item {
+            width: 19%;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>NaN Values Overview</h1>
+    <div class="container">
+        {% for chart, ids, title in data %}
+        <div class="item">
+            <h2>{{ title }}</h2>
+            {{ chart|safe }}
+            <h3>List of IDs with NaN Values</h3>
+            <ul>
+                {% for id in ids %}
+                <li>{{ id }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
