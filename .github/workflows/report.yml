@@ -1,8 +1,8 @@
 name: Create Report
 
-on: [push]
-  #schedule:
-  #  - cron: '30 16 * * *'
+on: #[push]
+  schedule:
+    - cron: '30 16 * * *'
 
 jobs:
   requirements:
