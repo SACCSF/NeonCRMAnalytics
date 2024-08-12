@@ -5,6 +5,7 @@ from datetime import datetime
 import logging
 import os
 import pandas as pd
+import numpy as np
 import requests
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
@@ -24,11 +25,11 @@ logging.debug(os.getenv("API_ORG_ID"))
 API_BASE_URL = "https://api.neoncrm.com/v2"
 API_LIMIT = 5000
 API_VERSION = "2.8"
-MAX_WORKERS = 2
+MAX_WORKERS = 8
 API_TIMEOUT = 0.5
 
 
-def get_request(url: str) -> dict:
+def get_request(url: str, return_key: str) -> dict:
     """
     Sends a GET request to the specified URL with the required headers and authentication,
     and returns the JSON response.
@@ -50,17 +51,46 @@ def get_request(url: str) -> dict:
         - If the request completes faster than `API_TIMEOUT`, the function waits for the remaining duration to ensure a consistent pacing of API requests.
         - The function returns the JSON response received from the server.
     """
-    payload = {}
-    headers = {"NEON-API-VERSION": str(API_VERSION), "Content-Type": "application/json"}
-    t1 = time.time()
-    api_response = requests.request(
-        "GET", url, headers=headers, data=payload, auth=auth
-    )
-    t2 = time.time()
-    duration = t2 - t1
-    if duration < API_TIMEOUT:
-        time.sleep(API_TIMEOUT - (duration))
-    return api_response.json()
+    while True:
+        headers = {
+            "NEON-API-VERSION": str(API_VERSION),
+            "Content-Type": "application/json",
+        }
+        t1 = time.time()
+        try:
+            api_response = requests.request("GET", url, headers=headers, auth=auth)
+            api_response.raise_for_status()
+
+            if not api_response.content:
+                logging.error(f"Empty API response, retrying...")
+                time.sleep(1)
+                continue
+
+            t2 = time.time()
+            duration = t2 - t1
+            if duration < API_TIMEOUT:
+                time.sleep(API_TIMEOUT - duration)
+
+            try:
+                res = api_response.json()
+
+            except ValueError:
+                logging.error(f"Response is not in JSON format, retrying...")
+                time.sleep(1)
+                continue
+            if type(res) == dict:
+                return res[return_key]
+            else:
+                logging.error(f"Error in API request: {res}, retrying...")
+                time.sleep(1)
+                continue
+
+        except requests.exceptions.HTTPError as err:
+            logging.error(
+                f"HTTP error occurred: {err} retrying...",
+            )
+            time.sleep(1)
+            continue
 
 
 def get_accounts_companies() -> pd.DataFrame:
@@ -78,9 +108,9 @@ def get_accounts_companies() -> pd.DataFrame:
     """
     url = API_BASE_URL + "/accounts?userType=COMPANY&pageSize=" + str(API_LIMIT)
 
-    response = get_request(url)
-    logging.debug(response)
-    return pd.json_normalize(response["accounts"])
+    response = get_request(url, "accounts")
+    logging.debug("All companies received!")
+    return pd.json_normalize(response)
 
 
 def get_accounts_individuals() -> pd.DataFrame:
@@ -98,9 +128,9 @@ def get_accounts_individuals() -> pd.DataFrame:
     """
     url = API_BASE_URL + "/accounts?userType=INDIVIDUAL&pageSize=" + str(API_LIMIT)
 
-    response = get_request(url)
-    logging.debug(response)
-    return pd.json_normalize(response["accounts"])
+    response = get_request(url, "accounts")
+    logging.debug("All individuals received!")
+    return pd.json_normalize(response)
 
 
 def get_accounts_additional_information(
@@ -134,16 +164,16 @@ def get_accounts_additional_information(
     logging.debug("Getting accounts additional information for " + str(account_id))
     url = API_BASE_URL + "/accounts/" + str(account_id)
 
-    response = get_request(url)
-
     if actual_type == "INDIVIDUAL":
         if account_type == "COMPANY":
             return pd.DataFrame({"accountId": [account_id]})
-        additional_information = pd.json_normalize(response["individualAccount"])
+        response = get_request(url, "individualAccount")
+        additional_information = pd.json_normalize(response)
     elif actual_type == "COMPANY":
         if account_type == "INDIVIDUAL":
             return pd.DataFrame({"accountId": [account_id]})
-        additional_information = pd.json_normalize(response["companyAccount"])
+        response = get_request(url, "companyAccount")
+        additional_information = pd.json_normalize(response)
     else:
         raise ValueError("Invalid account type")
 
@@ -165,6 +195,12 @@ def get_accounts_type(account: pd.Series) -> tuple:
                                         If no active membership is found, returns "No Membership active".
                - fee (str): The fee associated with the active membership.
                             If no active membership is found, returns "0.0".
+               - termEndDate (str): The end date of the active membership.
+                                      If no active membership is found, returns np.nan.
+               - transactionDate (str): The transaction date of the active membership.
+                                         If no active membership is found, returns np.nan.
+               - totalMemberships (int): The total number of memberships.
+                                            If no active membership is found, returns 0.
 
     Behavior:
         - Extracts the `account_id` from the given pandas Series.
@@ -175,21 +211,31 @@ def get_accounts_type(account: pd.Series) -> tuple:
         - Iterates through the memberships:
             - Converts the membership's `termEndDate` into a date object and checks if it is in the future.
             - If an active membership is found (i.e., the current date is before `termEndDate`), returns the `account_id`, membership level name, and associated fee.
-        - If no active membership is found, returns the `account_id`, "No Membership active", and a fee of "0.0".
-        """
+        - If no active membership is found, returns the `account_id`, "No Membership active", and a fee of "0.0" along with np.nan values for `termEndDate` and `transactionDate`.
+    """
     account_id = account["accountId"]
     logging.debug("Getting account type for " + account_id)
     url = API_BASE_URL + "/accounts/" + str(account_id) + "/memberships"
 
-    response = get_request(url)
+    response = get_request(url, "memberships")
     today = date.today()
-    memberships = pd.json_normalize(response["memberships"])
+    memberships = pd.json_normalize(response)
+
+    if len(memberships) == 0:
+        return (account_id, "No Membership active", "0.0", np.nan, np.nan, 0)
 
     for i, membership in memberships.iterrows():
         date_object = datetime.strptime(membership.termEndDate, "%Y-%m-%d").date()
         if today < date_object:
-            return (account_id, membership["membershipLevel.name"], membership["fee"])
-    return (account_id, "No Membership active", "0.0")
+            return (
+                account_id,
+                membership["membershipLevel.name"],
+                membership["fee"],
+                membership["termEndDate"],
+                membership["transactionDate"],
+                len(memberships),
+            )
+    return (account_id, "No Membership active", "0.0", np.nan, np.nan, len(memberships))
 
 
 def get_all_membership_types(accounts: pd.DataFrame) -> dict:
@@ -220,8 +266,13 @@ def get_all_membership_types(accounts: pd.DataFrame) -> dict:
         - The number of concurrent threads is controlled by the `MAX_WORKERS` variable.
     """
     logging.info("Get all membership types")
-    membership_types = {}
-    fees = {}
+    membership_types, fees, term_end_dates, transaction_dates, number_of_memberships = (
+        {},
+        {},
+        {},
+        {},
+        {},
+    )
     # Get membership types concurrently
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {
@@ -229,11 +280,27 @@ def get_all_membership_types(accounts: pd.DataFrame) -> dict:
             for _, account in accounts.iterrows()
         }
         for future in concurrent.futures.as_completed(futures):
-            id, account_type, fee = future.result()
+            (
+                id,
+                account_type,
+                fee,
+                term_end_date,
+                transaction_date,
+                number_of_membership,
+            ) = future.result()
             membership_types[id] = account_type
             fees[id] = fee
+            term_end_dates[id] = term_end_date
+            transaction_dates[id] = transaction_date
+            number_of_memberships[id] = number_of_membership
 
-    return (membership_types, fees)
+    return (
+        membership_types,
+        fees,
+        term_end_dates,
+        transaction_dates,
+        number_of_memberships,
+    )
 
 
 def get_all_event_ids() -> list:
@@ -256,10 +323,8 @@ def get_all_event_ids() -> list:
     """
     url = API_BASE_URL + "/events?pageSize=5000"
 
-    response = get_request(url)
-    event_list = response["events"]
-
-    return [event["id"] for event in event_list]
+    response = get_request(url, "events")
+    return [event["id"] for event in response]
 
 
 def get_attendees(eventId: int) -> list:
@@ -287,12 +352,11 @@ def get_attendees(eventId: int) -> list:
     """
     url = API_BASE_URL + "/events/" + str(eventId) + "/attendees"
 
-    response = get_request(url)
-    attendees = response["attendees"]
-    if attendees is None:
+    response = get_request(url, "attendees")
+    if response is None:
         return []
     # Return only unique ids
-    return list(set([attendee["registrantAccountId"] for attendee in attendees]))
+    return list(set([attendee["registrantAccountId"] for attendee in response]))
 
 
 def add_events_to_account(df) -> pd.DataFrame:
@@ -417,9 +481,14 @@ def add_membership_type_to_account(df) -> pd.DataFrame:
     Example:
         df = add_membership_type_to_account(df)
     """
-    membership_types, fees = get_all_membership_types(df)
+    membership_types, fees, term_end_dates, transactiom_dates, number_of_memberships = (
+        get_all_membership_types(df)
+    )
     df["Membership Type"] = df["accountId"].map(membership_types)
     df["Fee"] = df["accountId"].map(fees)
+    df["Term End Date"] = df["accountId"].map(term_end_dates)
+    df["Transaction Date"] = df["accountId"].map(transactiom_dates)
+    df["Number of Memberships"] = df["accountId"].map(number_of_memberships)
     return df
 
 
@@ -534,6 +603,7 @@ def filter_companies(companies: pd.DataFrame) -> pd.DataFrame:
         "accountCurrentMembershipStatus",
         "name",
         "primaryContact.contactId",
+        "primaryContact.accountId",
         "primaryContact.firstName",
         "primaryContact.middleName",
         "primaryContact.lastName",
