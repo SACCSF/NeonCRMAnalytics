@@ -1,8 +1,8 @@
 name: Create Report
 
-on: #[push]
-  schedule:
-    - cron: '30 16 * * *'
+on: [push]
+  #schedule:
+  #  - cron: '30 16 * * *'
 
 jobs:
   requirements:
@@ -79,3 +79,23 @@ jobs:
         ignore_cert: true
         convert_markdown: true
         priority: low
+
+
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./nan_report_combined_jinja.html
+
+  # Deploy the artifact to GitHub pages.
+  # This is a separate job so that only actions/deploy-pages has the necessary permissions.
+  deploy:
+    needs: report
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

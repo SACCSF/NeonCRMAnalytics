@@ -1,3 +1,4 @@
+import datetime
 import logging
 import logging.config
 from dotenv import load_dotenv
@@ -83,8 +84,10 @@ def generate_quality_report_individuals(df: pd.DataFrame):
     env = Environment(loader=FileSystemLoader("."))
     template = env.get_template("quality_report_individual.html")
 
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
     # Render the template with the data
-    rendered_html = template.render(data=template_data)
+    rendered_html = template.render(data=template_data, export_date=date)
 
     # Save the rendered HTML to a file
     with open("nan_report_combined_jinja.html", "w") as f:
