@@ -87,7 +87,9 @@ def generate_quality_report_individuals(df: pd.DataFrame):
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # Render the template with the data
-    rendered_html = template.render(data=template_data, export_date=date)
+    # individuals_nan, individuals_fee_membership, individuals_income_membership, individuals_membership_events_attended, individuals_origin_time_created, individuals_number_memberships_type
+    # organizations_nan, organizations_fee_membership, organizations_income_membership, organizations_membership_events_attended, organizations_origin_time_created, orginizations_number_memberships_type
+    rendered_html = template.render(individuals_nan=template_data, export_date=date)
 
     # Save the rendered HTML to a file
     with open("nan_report_combined_jinja.html", "w") as f:
