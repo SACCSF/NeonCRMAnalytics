@@ -10,44 +10,141 @@
             width: 19%;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 </head>
-<body id="start">
-    <div class="container sticky-top bg-light-subtle">
-            <!-- Menu bar -->
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                    <img class="bi me-2" src="http://saccsf.com/wp-content/uploads/2015/05/saccsf-logo.jpg" alt="" height="40px">
-                    <span class="fs-4"> | NEON Report | {{ export_date }} </span>
-                </a>
-                <ul class="nav nav-pills">
-                    <li class="nav-item"><a href="#start" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="#nan-values" class="nav-link">NaN Values</a></li>
-                    <!--
-                    <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">About</a></li>-->
+<body>
+<div class="container sticky-top bg-light-subtle">
+    <!-- Menu bar -->
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <img class="bi me-2" src="http://saccsf.com/wp-content/uploads/2015/05/saccsf-logo.jpg" alt="" height="40px">
+            <span class="fs-4"> | NEON Report | {{ export_date }} </span>
+        </a>
+        <ul class="nav nav-pills">
+            <li class="nav-item" id="home-button"><a href="#homebutton" class="nav-link" data-bs-toggle="collapse" aria-controls="homebutton" aria-expanded="true" >Home</a></li>
+            <li class="nav-item" id="nan-button"><a href="#nanbutton" class="nav-link" data-bs-toggle="collapse" aria-controls="nanbutton" aria-expanded="false" >NaN Values</a></li>
+            <!--
+            <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">About</a></li>-->
+        </ul>
+    </header>
+</div>
+
+<!-- Data-Group -->
+<div id="group">
+
+    <!-- Home section -->
+    <div class="collapse multi-collapse" id="homebutton" data-bs-parent="#group">
+        <div class="container">
+            <h1 class="text-body-emphasis">Get started with Bootstrap</h1>
+            <p class="fs-5 col-md-8">Quickly and easily get started with Bootstrap's compiled, production-ready files with this barebones example featuring some basic HTML and helpful links. Download all our examples to get started.</p>
+
+            <div class="mb-5">
+              <a href="/docs/5.3/examples/" class="btn btn-primary btn-lg px-4">Download examples</a>
+            </div>
+
+            <hr class="col-3 col-md-2 mb-5">
+
+            <div class="row g-5">
+              <div class="col-md-6">
+                <h2 class="text-body-emphasis">Starter projects</h2>
+                <p>Ready to go beyond the starter template? Check out these open source projects that you can quickly duplicate to a new GitHub repository.</p>
+                <ul class="list-unstyled ps-0">
+                  <li>
+                    <a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/icons-font" rel="noopener" target="_blank">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap npm starter
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/parcel" rel="noopener" target="_blank">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Parcel starter
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/vite" rel="noopener" target="_blank">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Vite starter
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/webpack" rel="noopener" target="_blank">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Webpack starter
+                    </a>
+                  </li>
                 </ul>
-            </header>
+              </div>
+
+              <div class="col-md-6">
+                <h2 class="text-body-emphasis">Guides</h2>
+                <p>Read more detailed instructions and documentation on using or contributing to Bootstrap.</p>
+                <ul class="list-unstyled ps-0">
+                  <li>
+                    <a class="icon-link mb-1" href="/docs/5.3/getting-started/introduction/">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap quick start guide
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="/docs/5.3/getting-started/webpack/">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Webpack guide
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="/docs/5.3/getting-started/parcel/">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Parcel guide
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="/docs/5.3/getting-started/vite/">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Bootstrap Vite guide
+                    </a>
+                  </li>
+                  <li>
+                    <a class="icon-link mb-1" href="/docs/5.3/getting-started/contribute/">
+                      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"></use></svg>
+                      Contributing to Bootstrap
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Content -->
-    <div class="container" id="nan-values">
+    <!-- Nan-values section -->
+    <div class="collapse multi-collapse" id="nanbutton" data-bs-parent="#group">
+        <div class="container">
         <h1>NaN Values</h1>
         <div class="row">
             {% for chart, ids, title in data %}
             <div class="col-md-4">
                 <h2>{{ title }}</h2>
                 {{ chart|safe }}
-                <h3>List of IDs with NaN Values</h3>
-                <ul>
-                {% for id in ids %}
-                    <li>{{ id }}</li>
-                {% endfor %}
+                {% if ids|length > 0 %}
+                    <h4>List of IDs with NaN Values</h4>
+                    <ul>
+                    {% for id in ids %}
+                        <li>{{ id }}</li>
+                    {% endfor %}
+                {% endif %}
             </ul>
             </div>
             {% endfor %}
         </div>
     </div>
+    </div>
+</div>
+
+
+
 </body>
 </html>
