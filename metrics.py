@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 def fee_vs_member_type(df, enable_raw_values=False):
@@ -45,7 +46,9 @@ def total_income_by_member_type_ploty(df: pd.DataFrame) -> px.bar:
     fig = px.bar(
         values, x="Membership Type", y=columns, title="Total Income by Member Type"
     )
-    return fig
+
+    fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
+    return fig_html
 
 
 def membership_type_vs_events(df: pd.DataFrame):
@@ -77,7 +80,7 @@ def membership_type_vs_events(df: pd.DataFrame):
     return values_df
 
 
-def origin_vs_timestmap_created_date(df: pd.DataFrame):
+def origin_vs_timestamp_created_date(df: pd.DataFrame):
     origin = df["origin.originCategory"]
     created_date = df["timestamps.createdDateTime"]
 
@@ -106,7 +109,7 @@ def origin_vs_timestmap_created_date(df: pd.DataFrame):
     return values_df
 
 
-def number_of_membershuis_vs_membership_type(df: pd.DataFrame):
+def number_of_membership_vs_membership_type(df: pd.DataFrame):
     membership_type = df["Membership Type"]
     number_of_memberships = df["Number of Memberships"]
 
@@ -181,6 +184,40 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
     return df[df[col].apply(lambda x: any(char in x for char in special_chars))][
         "accountId"
     ].values
+
+
+def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
+    charts, nan_ids_dict = {}, {}
+    filter_columns = ["accountId"] + columns
+    plotly_df = df.rename(
+        columns={
+            "timestamps.createdBy": "timestamps",
+            "origin.originDetail": "origin",
+        }
+    )[filter_columns]
+    for column in columns:
+        nan_ids = get_missing_ids(plotly_df, column)
+        nan_ids_dict[column] = nan_ids
+        plotly_fig = go.Figure(
+            data=[
+                go.Pie(
+                    labels=["Valid Data", "Missing Data"],
+                    values=[len(plotly_df) - len(nan_ids), len(nan_ids)],
+                    hole=0.3,
+                )
+            ]
+        )
+
+        plotly_fig.update_traces(
+            marker=dict(
+                colors=["##50C878", "#FF0000"], line=dict(color="#000000", width=2)
+            ),
+            showlegend=False,
+        )
+
+        chart_html = plotly_fig.to_html(full_html=False, include_plotlyjs=False)
+        charts[column] = chart_html
+    return [(charts[column], nan_ids_dict[column]) for column in columns]
 
 
 if __name__ == "__main__":

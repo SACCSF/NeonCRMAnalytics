@@ -14,3 +14,4 @@ local.env
 *.csv
 *.xlsx
 /docs
+__pycache__/
