@@ -25,7 +25,7 @@ logging.debug(os.getenv("API_ORG_ID"))
 API_BASE_URL = "https://api.neoncrm.com/v2"
 API_LIMIT = 5000
 API_VERSION = "2.8"
-MAX_WORKERS = 8
+MAX_WORKERS = 4
 API_TIMEOUT = 0.5
 
 
