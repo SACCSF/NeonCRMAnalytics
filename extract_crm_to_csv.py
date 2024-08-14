@@ -303,7 +303,7 @@ def get_all_membership_types(accounts: pd.DataFrame) -> dict:
     )
 
 
-def get_all_event_ids() -> list:
+def get_all_events() -> list:
     """
     Retrieves all event IDs from the API and returns them as a list.
 
@@ -324,7 +324,7 @@ def get_all_event_ids() -> list:
     url = API_BASE_URL + "/events?pageSize=5000"
 
     response = get_request(url, "events")
-    return [event["id"] for event in response]
+    return response
 
 
 def get_attendees(eventId: int) -> list:
@@ -384,7 +384,20 @@ def add_events_to_account(df) -> pd.DataFrame:
         - The "event_ids" column is added to the DataFrame, where each cell contains a list of event IDs representing the events attended by the account.
         - The `get_all_event_ids` and `get_attendees` functions are used to fetch event and attendee data from the API.
     """
-    event_ids = get_all_event_ids()
+    events = get_all_events()
+    events_df = pd.json_normalize(events)
+    events_df = events_df[events_df["archived"] == False]
+    events_df = events_df[events_df["id"] != 2]
+    events_df = events_df[
+        [
+            "id",
+            "name",
+            "startDate",
+        ]
+    ]
+    events_df.to_csv("events.csv", index=False, header=True)
+
+    event_ids = events_df["id"].tolist()
     df.loc[:, "event_ids"] = [[] for _ in range(len(df))]
 
     for event_id in event_ids:
