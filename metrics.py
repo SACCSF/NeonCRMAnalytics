@@ -272,7 +272,9 @@ def get_account_creation_date_plot(
             )
         )
 
-    return fig
+    fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
+
+    return fig_html
 
 
 def filter_non_active_accounts(df) -> pd.DataFrame:
