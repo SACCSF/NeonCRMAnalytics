@@ -94,7 +94,7 @@
         </div>
         <ul class="nav nav-pills">
             <li class="nav-item" id="error-button"><a href="#errorbutton" class="nav-link" data-bs-toggle="collapse"
-                                                     aria-controls="errorbutton" aria-expanded="true">Errors</a></li>
+                                                      aria-controls="errorbutton" aria-expanded="true">Errors</a></li>
         </ul>
     </header>
 </div>
@@ -121,58 +121,67 @@
                     <h2 class="text-body-emphasis">Data overview</h2>
 
                     {% if individuals_wrong_user_type|length > 0 or organizations_wrong_user_type|length > 0 %}
-                    <div class="alert alert-danger" role="alert">
-                      We have found several errors in the data.
-                    </div>
+
+                    <p>We have found several errors in the data.</p>
+
                     {% endif %}
 
                     {% if individuals_wrong_user_type|length > 0 %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
 
-                    <h4>Individuals user type</h4>
-                    <p>There are {{ (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1, 'floor')
-                        }}% individual users with the wrong user type.</p>
-                    <div class="progress-stacked">
-                        <div class="progress" role="progressbar" aria-label="Segment one"
-                             aria-valuenow="{{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}"
-                             aria-valuemin="0" aria-valuemax="100"
-                             style="width: {{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}%">
-                            <div class="progress-bar bg-success">{{ 100- (individuals_wrong_user_type|length /
-                                individuals_df|length * 100)|round(1, 'floor') }}%
+                        <h4>Individuals user type</h4>
+                        <p>There are {{ (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1,
+                            'floor')
+                            }}% individual users with the wrong user type.</p>
+                        <div class="progress-stacked">
+                            <div class="progress" role="progressbar" aria-label="Segment one"
+                                 aria-valuenow="{{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 style="width: {{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}%">
+                                <div class="progress-bar bg-success">{{ 100- (individuals_wrong_user_type|length /
+                                    individuals_df|length * 100)|round(1, 'floor') }}%
+                                </div>
+                            </div>
+                            <div class="progress" role="progressbar" aria-label="Segment two"
+                                 aria-valuenow="{{ individuals_wrong_user_type|length / individuals_df|length * 100 }}"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 style="width: {{ individuals_wrong_user_type|length / individuals_df|length * 100 }}%">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
+                                    (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1, 'floor')
+                                    }}%
+                                </div>
                             </div>
                         </div>
-                        <div class="progress" role="progressbar" aria-label="Segment two"
-                             aria-valuenow="{{ individuals_wrong_user_type|length / individuals_df|length * 100 }}"
-                             aria-valuemin="0" aria-valuemax="100"
-                             style="width: {{ individuals_wrong_user_type|length / individuals_df|length * 100 }}%">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
-                                (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1, 'floor') }}%
-                            </div>
-                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
 
                     {% if organizations_wrong_user_type|length > 0 %}
-                    <h4>Organizations user type</h4>
-                    <p>There are {{ (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1,
-                        'floor') }}% organizations with the wrong user type.</p>
-                    <div class="progress-stacked">
-                        <div class="progress" role="progressbar" aria-label="Segment one"
-                             aria-valuenow="{{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}"
-                             aria-valuemin="0" aria-valuemax="100"
-                             style="width: {{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}%">
-                            <div class="progress-bar bg-success">{{ 100- (organizations_wrong_user_type|length /
-                                organizations_df|length * 100)|round(1, 'floor') }}%
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <h4>Organizations user type</h4>
+                        <p>There are {{ (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1,
+                            'floor') }}% organizations with the wrong user type.</p>
+                        <div class="progress-stacked">
+                            <div class="progress" role="progressbar" aria-label="Segment one"
+                                 aria-valuenow="{{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 style="width: {{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}%">
+                                <div class="progress-bar bg-success">{{ 100- (organizations_wrong_user_type|length /
+                                    organizations_df|length * 100)|round(1, 'floor') }}%
+                                </div>
+                            </div>
+                            <div class="progress" role="progressbar" aria-label="Segment two"
+                                 aria-valuenow="{{ organizations_wrong_user_type|length / organizations_df|length * 100 }}"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 style="width: {{ organizations_wrong_user_type|length / organizations_df|length * 100 }}%">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
+                                    (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1,
+                                    'floor')
+                                    }}%
+                                </div>
                             </div>
                         </div>
-                        <div class="progress" role="progressbar" aria-label="Segment two"
-                             aria-valuenow="{{ organizations_wrong_user_type|length / organizations_df|length * 100 }}"
-                             aria-valuemin="0" aria-valuemax="100"
-                             style="width: {{ organizations_wrong_user_type|length / organizations_df|length * 100 }}%">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
-                                (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1, 'floor')
-                                }}%
-                            </div>
-                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
 
@@ -181,8 +190,31 @@
                     <img src="https://octodex.github.com/images/vinyltocat.png" height="25%">
                     {% endif %}
                 </div>
-
                 <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Individuals {{ individuals_df|length }}</h5>
+                                    <p class="card-text">With an active membership.</p>
+                                    <a href="https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300032"
+                                       target="_blank" class="btn btn-primary">See report in Neon</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Organizations {{ organizations_df|length }}</h5>
+                                    <p class="card-text">With an active membership.</p>
+                                    <a href="https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300033"
+                                       target="_blank" class="btn btn-primary">See report in Neon</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <h2 class="text-body-emphasis">Quick Links</h2>
                     <p>Read more detailed documentation on Github.</p>
                     <ul class="list-unstyled ps-0">
@@ -505,31 +537,72 @@
     <!-- Errors -->
     <div class="collapse multi-collapse" id="errorbutton" data-bs-parent="#group">
         <div class="container">
-            <h1>Errors</h1>
-            <div class="row">
-                <div class="col-md-12">
-                {% if individuals_wrong_user_type|length > 0 %}
 
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>Errors at type individuals</h1>
+                    {% if individuals_wrong_user_type|length > 0 %}
                     <h4>Individuals wrong user type</h4>
-                    <p>These individual users have the wrong user type:</p>
+                    <p>These individual users have the wrong user type. Change to user type company.</p>
                     <ul>
                         {% for user in individuals_wrong_user_type %}
-                        <li><a href="https://saccsf.app.neoncrm.com/admin/accounts/{{ user }}/about" target="_blank"> {{ user }}</a></li>
+                        <li><a href="https://saccsf.app.neoncrm.com/admin/accounts/{{ user }}/about" target="_blank"> {{
+                            user }}</a></li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
+
+                    {% if individuals_name_inconsistencies|length > 0 %}
+                    <h4>Individuals inconsistencies in data</h4>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            {% for title in individuals_name_inconsistencies.columns %}
+                            <th scope="col">{{ title }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- individuals_fee_membership.iloc[0]['0.0$'] -->
+
+                        {% for idx, row in individuals_name_inconsistencies.iterrows() %}
+                        <tr>
+                            <th scope="row">{{ idx }}</th>
+                            {% for col in individuals_name_inconsistencies.columns %}
+                            <td>{{ individuals_name_inconsistencies.at[idx, col] }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
 
                     {% endif %}
 
                     {% if organizations_wrong_user_type|length > 0 %}
-
                     <h4>Organizations wrong user type</h4>
-                    <p>These organizations have the wrong user type:</p>
+                    <p>These organizations have the wrong user type. Change to user type individual.</p>
                     <ul>
                         {% for user in organizations_wrong_user_type %}
-                        <li><a href="https://saccsf.app.neoncrm.com/admin/accounts/{{ user }}/about" target="_blank"> {{ user }}</a></li>
+                        <li><a href="https://saccsf.app.neoncrm.com/admin/accounts/{{ user }}/about" target="_blank"> {{
+                            user }}</a></li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
 
+                </div>
+
+                <div class="col-md-6">
+                    <h1>Errors at type organizations</h1>
+                    {% if organizations_wrong_user_type|length > 0 %}
+                    <h4>Individuals wrong user type</h4>
+                    <p>These organizations have the wrong user type. Change to user type individual.</p>
+                    <ul>
+                        {% for user in organizations_wrong_user_type %}
+                        <li><a href="https://saccsf.app.neoncrm.com/admin/accounts/{{ user }}/about" target="_blank"> {{
+                            user }}</a></li>
+                        {% endfor %}
+                    </ul>
                     {% endif %}
                 </div>
             </div>
