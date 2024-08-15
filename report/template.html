@@ -21,7 +21,7 @@
 <div class="container sticky-top bg-light-subtle">
     <!-- Menu bar -->
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
             <img class="bi me-2" src="http://saccsf.com/wp-content/uploads/2015/05/saccsf-logo.jpg" alt=""
                  height="40px">
             <span class="fs-4"> | NEON Report | {{ export_date }} </span>
@@ -50,10 +50,6 @@
                    href="#individualsmembershiptypeeventsattendedbutton"
                    data-bs-toggle="collapse" aria-controls="individualsmembershiptypeeventsattendedbutton"
                    aria-expanded="false">Membership type vs. events attended</a>
-                <a class="dropdown-item" id="individuals-origintimestampcreated"
-                   href="#individualsorigintimestampcreatedbutton"
-                   data-bs-toggle="collapse" aria-controls="individualsorigintimestampcreatedbutton"
-                   aria-expanded="false">Origin vs. timestamp created date</a>
                 <a class="dropdown-item" id="individuals-numbermembershiptype"
                    href="#individualsnumbermembershiptypebutton"
                    data-bs-toggle="collapse" aria-controls="individualsnumbermembershiptypebutton"
@@ -82,10 +78,6 @@
                    href="#organizationsmembershiptypeeventsattendedbutton"
                    data-bs-toggle="collapse" aria-controls="organizationsmembershiptypeeventsattendedbutton"
                    aria-expanded="false">Membership type vs. events attended</a>
-                <a class="dropdown-item" id="organizations-origintimestampcreated"
-                   href="#organizationsorigintimestampcreatedbutton"
-                   data-bs-toggle="collapse" aria-controls="organizationsorigintimestampcreatedbutton"
-                   aria-expanded="false">Origin vs. timestamp created date</a>
                 <a class="dropdown-item" id="organizations-numbermembershiptype"
                    href="#organizationsnumbermembershiptypebutton"
                    data-bs-toggle="collapse" aria-controls="organizationsnumbermembershiptypebutton"
@@ -93,8 +85,12 @@
             </div>
         </div>
         <ul class="nav nav-pills">
+            <li class="nav-item" id="registrations-button"><a href="#registrationsbutton" class="nav-link"
+                                                              data-bs-toggle="collapse"
+                                                              aria-controls="registrationsbutton" aria-expanded="false">Registrations</a>
+            </li>
             <li class="nav-item" id="error-button"><a href="#errorbutton" class="nav-link" data-bs-toggle="collapse"
-                                                      aria-controls="errorbutton" aria-expanded="true">Errors</a></li>
+                                                      aria-controls="errorbutton" aria-expanded="false">Errors</a></li>
         </ul>
     </header>
 </div>
@@ -128,26 +124,25 @@
 
                     {% if individuals_wrong_user_type|length > 0 %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-
                         <h4>Individuals user type</h4>
-                        <p>There are {{ (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1,
-                            'floor')
-                            }}% individual users with the wrong user type.</p>
+                        <p>There are {{ (individuals_wrong_user_type|length / individuals_members|length * 100)|round(1,
+                            'floor') }}% individual users with the wrong user type.</p>
                         <div class="progress-stacked">
                             <div class="progress" role="progressbar" aria-label="Segment one"
-                                 aria-valuenow="{{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}"
+                                 aria-valuenow="{{ 100 - (individuals_wrong_user_type|length / individuals_members|length * 100) }}"
                                  aria-valuemin="0" aria-valuemax="100"
-                                 style="width: {{ 100 - (individuals_wrong_user_type|length / individuals_df|length * 100) }}%">
+                                 style="width: {{ 100 - (individuals_wrong_user_type|length / individuals_members|length * 100) }}%">
                                 <div class="progress-bar bg-success">{{ 100- (individuals_wrong_user_type|length /
-                                    individuals_df|length * 100)|round(1, 'floor') }}%
+                                    individuals_members|length * 100)|round(1, 'floor') }}%
                                 </div>
                             </div>
                             <div class="progress" role="progressbar" aria-label="Segment two"
-                                 aria-valuenow="{{ individuals_wrong_user_type|length / individuals_df|length * 100 }}"
+                                 aria-valuenow="{{ individuals_wrong_user_type|length / individuals_members|length * 100 }}"
                                  aria-valuemin="0" aria-valuemax="100"
-                                 style="width: {{ individuals_wrong_user_type|length / individuals_df|length * 100 }}%">
+                                 style="width: {{ individuals_wrong_user_type|length / individuals_members|length * 100 }}%">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
-                                    (individuals_wrong_user_type|length / individuals_df|length * 100)|round(1, 'floor')
+                                    (individuals_wrong_user_type|length / individuals_members|length * 100)|round(1,
+                                    'floor')
                                     }}%
                                 </div>
                             </div>
@@ -159,23 +154,24 @@
                     {% if organizations_wrong_user_type|length > 0 %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <h4>Organizations user type</h4>
-                        <p>There are {{ (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1,
+                        <p>There are {{ (organizations_wrong_user_type|length / organizations_members|length *
+                            100)|round(1,
                             'floor') }}% organizations with the wrong user type.</p>
                         <div class="progress-stacked">
                             <div class="progress" role="progressbar" aria-label="Segment one"
-                                 aria-valuenow="{{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}"
+                                 aria-valuenow="{{ 100 - (organizations_wrong_user_type|length / organizations_members|length * 100) }}"
                                  aria-valuemin="0" aria-valuemax="100"
-                                 style="width: {{ 100 - (organizations_wrong_user_type|length / organizations_df|length * 100) }}%">
+                                 style="width: {{ 100 - (organizations_wrong_user_type|length / organizations_members|length * 100) }}%">
                                 <div class="progress-bar bg-success">{{ 100- (organizations_wrong_user_type|length /
-                                    organizations_df|length * 100)|round(1, 'floor') }}%
+                                    organizations_members|length * 100)|round(1, 'floor') }}%
                                 </div>
                             </div>
                             <div class="progress" role="progressbar" aria-label="Segment two"
-                                 aria-valuenow="{{ organizations_wrong_user_type|length / organizations_df|length * 100 }}"
+                                 aria-valuenow="{{ organizations_wrong_user_type|length / organizations_members|length * 100 }}"
                                  aria-valuemin="0" aria-valuemax="100"
-                                 style="width: {{ organizations_wrong_user_type|length / organizations_df|length * 100 }}%">
+                                 style="width: {{ organizations_wrong_user_type|length / organizations_members|length * 100 }}%">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger">{{
-                                    (organizations_wrong_user_type|length / organizations_df|length * 100)|round(1,
+                                    (organizations_wrong_user_type|length / organizations_members|length * 100)|round(1,
                                     'floor')
                                     }}%
                                 </div>
@@ -190,9 +186,9 @@
                     <img src="https://octodex.github.com/images/vinyltocat.png" height="25%">
                     {% endif %}
                 </div>
-                <div class="col-md-6 row-gap-3">
+                <div class="col-md-6 grid grid gap-3">
                     <div class="row">
-                        <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="col-sm-6 mb-3 mb-sm-0 p-2 g-col-6">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Individuals {{ individuals_members|length }}</h5>
@@ -202,7 +198,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 mb-3 mb-sm-0 p-2 g-col-6">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Organizations {{ organizations_members|length }}</h5>
@@ -213,17 +209,17 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 mb-3 mb-sm-0 p-2 g-col-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Individuals {{ organizations_df|length }}</h5>
+                                    <h5 class="card-title">Individuals {{ individuals_df|length }}</h5>
                                     <p class="card-text">With and without an active membership.</p>
                                     <a href="https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300035"
                                        target="_blank" class="btn btn-primary">See report in Neon</a>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 mb-3 mb-sm-0 p-2 g-col-6">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Organizations {{ organizations_df|length }}</h5>
@@ -260,7 +256,7 @@
     <!-- Individuals Nan-values section -->
     <div class="collapse multi-collapse" id="individualsnanbutton" data-bs-parent="#group">
         <div class="container">
-            <h1>Missing values</h1>
+            <h1>Missing values individuals</h1>
             <div class="row">
                 {% for chart, ids, title in individuals_nan %}
                 <div class="col-md-6">
@@ -268,22 +264,19 @@
                     {{ chart|safe }}
                     {% if ids|length > 0 %}
                     <h4>List of IDs with NaN Values in {{ title }}</h4>
-                    <ul>
-                        {% for id in ids %}
-                        <li>{{ id }}</li>
-                        {% endfor %}
-                        {% endif %}
-                    </ul>
+                    <a class="btn btn-outline-primary" href="{{ ids }}" target="_blank">Go to NEON</a>
+                    <hr>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 
-    <!-- Individuals Nan-values section -->
+    <!-- Organizations Nan-values section -->
     <div class="collapse multi-collapse" id="organizationsnanbutton" data-bs-parent="#group">
         <div class="container">
-            <h1>Missing values</h1>
+            <h1>Missing values organizations</h1>
             <div class="row">
                 {% for chart, ids, title in organizations_nan %}
                 <div class="col-md-6">
@@ -291,12 +284,9 @@
                     {{ chart|safe }}
                     {% if ids|length > 0 %}
                     <h4>List of IDs with NaN Values in {{ title }}</h4>
-                    <ul>
-                        {% for id in ids %}
-                        <li>{{ id }}</li>
-                        {% endfor %}
-                        {% endif %}
-                    </ul>
+                    <a class="btn btn-outline-primary" href="{{ ids }}" target="_blank">Go to NEON</a>
+                    <hr>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -471,12 +461,12 @@
         </div>
     </div>
 
-    <!-- Individuals origin vs. timestamp created date section -->
-    <div class="collapse multi-collapse" id="individualsorigintimestampcreatedbutton" data-bs-parent="#group">
+    <!-- Registrations sections -->
+    <div class="collapse multi-collapse" id="registrationsbutton" data-bs-parent="#group">
         <div class="container">
-            <h1>Origin vs. timestamp created date</h1>
+            <h1>Registrations by quarter</h1>
             <div class="row">
-
+                {{ combined_new_account_registrations_plot }}
             </div>
         </div>
     </div>
