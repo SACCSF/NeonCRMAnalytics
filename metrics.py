@@ -210,14 +210,14 @@ def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
 
         plotly_fig.update_traces(
             marker=dict(
-                colors=["##50C878", "#FF0000"], line=dict(color="#000000", width=2)
+                colors=["#50C878", "#FF0000"], line=dict(color="#000000", width=2)
             ),
             showlegend=False,
         )
 
         chart_html = plotly_fig.to_html(full_html=False, include_plotlyjs=False)
         charts[column] = chart_html
-    return [(charts[column], nan_ids_dict[column]) for column in columns]
+    return [(charts[column], nan_ids_dict[column], str(column)) for column in columns]
 
 
 def get_name_inconsistencies(individuals: pd.DataFrame) -> pd.DataFrame:
