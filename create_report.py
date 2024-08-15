@@ -42,6 +42,9 @@ def generate_report():
     individuals_df = pd.read_csv("individuals.csv")
     companies_df = pd.read_csv("companies.csv")
 
+    individuals_members = filter_non_active_accounts(individuals_df)
+    companies_members = filter_non_active_accounts(companies_df)
+
     individuals_nan = get_plotly_list_nan_values(
         individuals_df, quality_columns_individuals
     )
@@ -83,6 +86,10 @@ def generate_report():
 
     rendered_html = template.render(
         export_date=export_date,
+        individuals_df=individuals_df,
+        organizations_df=companies_df,
+        individuals_members=individuals_members,
+        organizations_members=companies_members,
         individuals_nan=individuals_nan,
         organizations_nan=organizations_nan,
         individuals_fee_membership=individuals_fee_membership,

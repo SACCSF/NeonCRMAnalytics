@@ -259,6 +259,10 @@ def get_account_creation_date_plot(
     return fig
 
 
+def filter_non_active_accounts(df) -> pd.DataFrame:
+    return df[df["Membership Type"] != "No Membership active"]
+
+
 if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")

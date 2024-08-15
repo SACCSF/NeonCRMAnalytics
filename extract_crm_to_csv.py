@@ -505,30 +505,6 @@ def add_membership_type_to_account(df) -> pd.DataFrame:
     return df
 
 
-def filter_non_active_accounts(df) -> pd.DataFrame:
-    """
-    Filters out accounts that do not have an active membership from a DataFrame.
-
-    Parameters:
-        df (pd.DataFrame): A pandas DataFrame containing account information, including a "Membership Type" column.
-
-    Returns:
-        pd.DataFrame: A filtered DataFrame containing only accounts with active memberships.
-
-    Behavior:
-        - Filters the input DataFrame by excluding rows where the "Membership Type" is equal to "No Membership active".
-        - Returns a DataFrame with only the accounts that have an active membership.
-
-    Notes:
-        - Assumes that the DataFrame `df` contains a column named "Membership Type".
-        - Accounts with "No Membership active" are considered non-active and are removed from the returned DataFrame.
-
-    Example:
-        active_accounts_df = filter_non_active_accounts(df)
-    """
-    return df[df["Membership Type"] != "No Membership active"]
-
-
 def filter_individuals(individuals: pd.DataFrame) -> pd.DataFrame:
     """
     Filters out specific columns from a DataFrame of individual accounts, removing unnecessary information.
@@ -706,7 +682,6 @@ def add_fields_to_account(account: pd.DataFrame, actual) -> pd.DataFrame:
         processed_accounts = add_fields_to_account(accounts_df, actual="COMPANY")
     """
     account = add_membership_type_to_account(account)
-    account = filter_non_active_accounts(account)
     account = add_events_to_account(account)
     account = add_creation_date_to_account(account, actual)
 
