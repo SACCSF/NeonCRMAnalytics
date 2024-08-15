@@ -4,3 +4,4 @@ Reporting_Individuals_Missing_LastName;https://saccsf.app.neoncrm.com/np/admin/r
 Reporting_Individuals_Missing_CompanyName;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300039
 Reporting_Organizations_Missing_Email;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300040
 Reporting_Organizations_Missing_PrimaryContactId;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300041
+Reporting_Organizations_Missing_CompanyName;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300042

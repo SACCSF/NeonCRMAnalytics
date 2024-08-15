@@ -190,12 +190,12 @@
                     <img src="https://octodex.github.com/images/vinyltocat.png" height="25%">
                     {% endif %}
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 row-gap-3">
                     <div class="row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Individuals {{ individuals_df|length }}</h5>
+                                    <h5 class="card-title">Individuals {{ individuals_members|length }}</h5>
                                     <p class="card-text">With an active membership.</p>
                                     <a href="https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300032"
                                        target="_blank" class="btn btn-primary">See report in Neon</a>
@@ -205,13 +205,14 @@
                         <div class="col-sm-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Organizations {{ organizations_df|length }}</h5>
+                                    <h5 class="card-title">Organizations {{ organizations_members|length }}</h5>
                                     <p class="card-text">With an active membership.</p>
                                     <a href="https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300033"
                                        target="_blank" class="btn btn-primary">See report in Neon</a>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-sm-6">
                             <div class="card">
                                 <div class="card-body">
