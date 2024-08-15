@@ -13,7 +13,10 @@ def fee_vs_member_type(df, enable_raw_values=False):
 
     # Count the number of each member type for each fee
     values_df = pd.DataFrame(
-        np.zeros((len(types), len(fees))), index=types, columns=fees
+        np.zeros((len(types), len(fees))),
+        index=types,
+        columns=fees,
+        dtype=int,
     )
 
     # Populate the DataFrame
@@ -28,6 +31,17 @@ def fee_vs_member_type(df, enable_raw_values=False):
         return values_df, raw_values
 
     return values_df
+
+
+def fee_vs_member_type_missmatch(df: pd.DataFrame) -> pd.DataFrame:
+    res = []
+    for name, row in df.iterrows():
+        uniques = row.unique()
+        # Remove 0 from the list
+        uniques = uniques[uniques != 0]
+        if len(uniques) > 1:
+            res.append(name)
+    return res
 
 
 def total_income_by_member_type_ploty(df: pd.DataFrame) -> px.bar:
@@ -62,7 +76,10 @@ def membership_type_vs_events(df: pd.DataFrame):
 
     # Count the number of each member type for each fee
     values_df = pd.DataFrame(
-        np.zeros((len(types), len(event))), index=types, columns=event
+        np.zeros((len(types), len(event))),
+        index=types,
+        columns=event,
+        dtype=int,
     )
 
     # Populate the DataFrame
@@ -80,35 +97,6 @@ def membership_type_vs_events(df: pd.DataFrame):
     return values_df
 
 
-def origin_vs_timestamp_created_date(df: pd.DataFrame):
-    origin = df["origin.originCategory"]
-    created_date = df["timestamps.createdDateTime"]
-
-    origins = origin.unique()
-    created_dates = created_date.unique()
-
-    # Remove the NaN columns and rows
-    origins = origins[~pd.isna(origins)]
-    created_dates = created_dates[~pd.isna(created_dates)]
-
-    # Count the number of each member type for each fee
-    values_df = pd.DataFrame(
-        np.zeros((len(origins), len(created_dates))),
-        index=origins,
-        columns=created_dates,
-    )
-
-    # Populate the DataFrame
-    for i, o in enumerate(origins):
-        for j, c in enumerate(created_dates):
-            values_df.loc[o, c] = np.sum((origin == o) & (created_date == c))
-
-    # Create column with the sum of all the rows
-    values_df = values_df.T
-    values_df["Grand Total"] = values_df.sum(axis=1)
-    return values_df
-
-
 def number_of_membership_vs_membership_type(df: pd.DataFrame):
     membership_type = df["Membership Type"]
     number_of_memberships = df["Number of Memberships"]
@@ -121,6 +109,7 @@ def number_of_membership_vs_membership_type(df: pd.DataFrame):
         np.zeros((len(types), len(memberships))),
         index=types,
         columns=memberships,
+        dtype=int,
     )
 
     # Populate the DataFrame
@@ -181,9 +170,11 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
         "~",
         "`",
     ]
-    return df[df[col].apply(lambda x: any(char in x for char in special_chars))][
-        ["accountId", "firstName", "lastName"]
-    ]
+    return df[
+        df[col].apply(
+            lambda x: isinstance(x, str) and any(char in x for char in special_chars)
+        )
+    ][["accountId", "firstName", "lastName"]]
 
 
 def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
@@ -272,4 +263,12 @@ if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
 
-    print(get_account_creation_date_plot(individuals, companies))
+    fees = fee_vs_member_type(individuals)
+    missmatch = fee_vs_member_type_missmatch(fees)
+
+    print(missmatch)
+
+    fees = fee_vs_member_type(companies)
+    missmatch = fee_vs_member_type_missmatch(fees)
+
+    print(missmatch)

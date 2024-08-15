@@ -52,6 +52,13 @@ def generate_report():
     individuals_fee_membership = fee_vs_member_type(individuals_df)
     organizations_fee_membership = fee_vs_member_type(companies_df)
 
+    individuals_fee_membership_missmatch = fee_vs_member_type_missmatch(
+        individuals_fee_membership
+    )
+    organizations_fee_membership_missmatch = fee_vs_member_type_missmatch(
+        organizations_fee_membership
+    )
+
     individuals_income_membership = total_income_by_member_type_ploty(individuals_df)
     organizations_income_membership = total_income_by_member_type_ploty(companies_df)
 
@@ -80,6 +87,8 @@ def generate_report():
         organizations_nan=organizations_nan,
         individuals_fee_membership=individuals_fee_membership,
         organizations_fee_membership=organizations_fee_membership,
+        individuals_fee_membership_missmatch=individuals_fee_membership_missmatch,
+        organizations_fee_membership_missmatch=organizations_fee_membership_missmatch,
         individuals_income_membership=individuals_income_membership,
         organizations_income_membership=organizations_income_membership,
         individuals_membership_events_attended=individuals_membership_events_attended,
