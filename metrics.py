@@ -236,8 +236,40 @@ def get_wrong_user_type_ids(df: pd.DataFrame, expected_value: str) -> pd.DataFra
     return df[df["userType"] != expected_value]["accountId"].to_list()
 
 
+def get_account_creation_date_plot(
+    individuals: pd.DataFrame, companies: pd.DataFrame
+) -> go.Figure:
+    accounts = pd.concat([individuals, companies]).reset_index(drop=True)
+    accounts["timestamps.createdDateTime"] = pd.to_datetime(
+        accounts["timestamps.createdDateTime"]
+    )
+
+    # Remove the rows with NaN values
+    accounts = accounts[~pd.isna(accounts["timestamps.createdDateTime"])]
+
+    # Group the dates by quarters and convert to integers
+    accounts["Quarter"] = accounts["timestamps.createdDateTime"].dt.quarter.astype(int)
+    accounts["Year"] = accounts["timestamps.createdDateTime"].dt.year.astype(int)
+
+    # Create a histogram based on the quarters
+    fig = go.Figure()
+    for quarter in sorted(accounts["Quarter"].unique()):
+        quarter_df = accounts[accounts["Quarter"] == quarter]
+
+        fig.add_trace(
+            go.Histogram(
+                x=quarter_df["Year"],
+                name=f"Q{quarter}",
+                histfunc="count",
+                xbins=dict(size=1),
+            )
+        )
+
+    return fig
+
+
 if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
 
-    print(get_name_inconsistencies(individuals))
+    print(get_account_creation_date_plot(individuals, companies))

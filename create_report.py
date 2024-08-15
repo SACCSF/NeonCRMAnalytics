@@ -70,6 +70,10 @@ def generate_report():
     individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "INDIVIDUAL")
     organizations_wrong_user_type = get_wrong_user_type_ids(companies_df, "COMPANY")
 
+    combined_new_account_registrations_plot = get_account_creation_date_plot(
+        individuals_df, companies_df
+    )
+
     rendered_html = template.render(
         export_date=export_date,
         individuals_nan=individuals_nan,
@@ -85,6 +89,7 @@ def generate_report():
         individuals_name_inconsistencies=individuals_name_inconsistencies,
         individuals_wrong_user_type=individuals_wrong_user_type,
         organizations_wrong_user_type=organizations_wrong_user_type,
+        combined_new_account_registrations_plot=combined_new_account_registrations_plot,
     )
     # Save the rendered HTML to a file
     with open("report/report.html", "w") as f:
