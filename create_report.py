@@ -61,9 +61,9 @@ def generate_report():
 
     individuals_name_inconsistencies = get_name_inconsistencies(individuals_df)
 
-    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "Individuals")
+    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "INDIVIDUAL")
     organizations_wrong_user_type = get_wrong_user_type_ids(
-        companies_df, "Organizations"
+        companies_df, "COMPANY"
     )
 
     combined_new_account_registrations_plot = get_account_creation_date_plot(
