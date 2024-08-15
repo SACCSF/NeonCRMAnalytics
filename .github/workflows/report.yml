@@ -80,10 +80,9 @@ jobs:
         convert_markdown: true
         priority: low
 
-
     - uses: actions/upload-pages-artifact@v3
       with:
-        path: ./nan_report_combined_jinja.html
+        path: report/
 
   # Deploy the artifact to GitHub pages.
   # This is a separate job so that only actions/deploy-pages has the necessary permissions.
