@@ -4,6 +4,22 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
+def get_quality_columns(mode: str):
+    res = ["email"]
+    if mode.lower() == "individual":
+        res += [
+            "firstName",
+            "lastName",
+            "companyName",
+        ]
+    elif mode.lower() == "company":
+        res += [
+            "companyName",
+            "primaryContactAccountId",
+        ]
+    return res
+
+
 def fee_vs_member_type(df, enable_raw_values=False):
     fee = df["Fee"]
     member_type = df["Membership Type"]
@@ -177,8 +193,9 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
     ][["accountId", "firstName", "lastName"]]
 
 
-def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
-    charts, nan_ids_dict = {}, {}
+def get_plotly_list_nan_values(df: pd.DataFrame, columns: list, mode: str) -> list:
+    charts = {}
+    url_dict = fetch_report_urls(columns, mode)
     filter_columns = ["accountId"] + columns
     plotly_df = df.rename(
         columns={
@@ -188,7 +205,6 @@ def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
     )[filter_columns]
     for column in columns:
         nan_ids = get_missing_ids(plotly_df, column)
-        nan_ids_dict[column] = nan_ids
         plotly_fig = go.Figure(
             data=[
                 go.Pie(
@@ -208,7 +224,7 @@ def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
 
         chart_html = plotly_fig.to_html(full_html=False, include_plotlyjs=False)
         charts[column] = chart_html
-    return [(charts[column], nan_ids_dict[column], str(column)) for column in columns]
+    return [(charts[column], url_dict[column], str(column)) for column in columns]
 
 
 def get_name_inconsistencies(individuals: pd.DataFrame) -> pd.DataFrame:
@@ -263,16 +279,29 @@ def filter_non_active_accounts(df) -> pd.DataFrame:
     return df[df["Membership Type"] != "No Membership active"]
 
 
+def fetch_report_urls(columns, mode):
+    with open("references.txt", "r") as f:
+        lines = f.read().splitlines()
+
+    url_dict = {}
+
+    for column in columns:
+        for line in lines:
+            name, url = line.split(";")
+            # breakpoint()
+            if not mode in name:
+                continue
+            if not column in name:
+                continue
+            url_dict[column] = url
+    return url_dict
+
+
 if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
 
-    fees = fee_vs_member_type(individuals)
-    missmatch = fee_vs_member_type_missmatch(fees)
+    columns = get_quality_columns("company")
+    individuals_nan = get_plotly_list_nan_values(companies, columns, "organizations")
 
-    print(missmatch)
-
-    fees = fee_vs_member_type(companies)
-    missmatch = fee_vs_member_type_missmatch(fees)
-
-    print(missmatch)
+    print(individuals_nan)

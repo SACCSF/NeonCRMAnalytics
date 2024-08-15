@@ -14,28 +14,12 @@ logging.config.fileConfig("NeonCRMAnalytics.log")
 load_dotenv()
 
 
-def get_quality_columns(mode: str):
-    res = ["email", "timestamps", "origin"]
-    if mode == "individual":
-        res += [
-            "firstName",
-            "lastName",
-            "companyName",
-        ]
-    elif mode == "company":
-        res += [
-            "companyName",
-            "primaryContactAccountId",
-        ]
-    return res
-
-
 def generate_report():
     quality_columns_individuals = get_quality_columns("individual")
     quality_columns_companies = get_quality_columns("company")
     # Set up Jinja2 environment
     env = Environment(loader=FileSystemLoader("."))
-    template = env.get_template("quality_report_individual.html")
+    template = env.get_template("report/template.html")
 
     export_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -46,10 +30,10 @@ def generate_report():
     companies_members = filter_non_active_accounts(companies_df)
 
     individuals_nan = get_plotly_list_nan_values(
-        individuals_df, quality_columns_individuals
+        individuals_df, quality_columns_individuals, "individuals"
     )
     organizations_nan = get_plotly_list_nan_values(
-        companies_df, quality_columns_companies
+        companies_df, quality_columns_companies, "organizations"
     )
 
     individuals_fee_membership = fee_vs_member_type(individuals_df)
@@ -77,8 +61,10 @@ def generate_report():
 
     individuals_name_inconsistencies = get_name_inconsistencies(individuals_df)
 
-    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "INDIVIDUAL")
-    organizations_wrong_user_type = get_wrong_user_type_ids(companies_df, "COMPANY")
+    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "Individuals")
+    organizations_wrong_user_type = get_wrong_user_type_ids(
+        companies_df, "Organizations"
+    )
 
     combined_new_account_registrations_plot = get_account_creation_date_plot(
         individuals_df, companies_df
