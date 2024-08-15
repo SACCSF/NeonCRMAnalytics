@@ -58,15 +58,17 @@ def generate_report():
     individuals_membership_events_attended = membership_type_vs_events(individuals_df)
     organizations_membership_events_attended = membership_type_vs_events(companies_df)
 
-    individuals_origin_time_created = origin_vs_timestamp_created_date(individuals_df)
-    organizations_origin_time_created = origin_vs_timestamp_created_date(companies_df)
-
     individuals_number_memberships_type = number_of_membership_vs_membership_type(
         individuals_df
     )
     orginizations_number_memberships_type = number_of_membership_vs_membership_type(
         companies_df
     )
+
+    individuals_name_inconsistencies = get_name_inconsistencies(individuals_df)
+
+    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "INDIVIDUAL")
+    organizations_wrong_user_type = get_wrong_user_type_ids(companies_df, "COMPANY")
 
     rendered_html = template.render(
         export_date=export_date,
@@ -78,10 +80,11 @@ def generate_report():
         organizations_income_membership=organizations_income_membership,
         individuals_membership_events_attended=individuals_membership_events_attended,
         organizations_membership_events_attended=organizations_membership_events_attended,
-        individuals_origin_time_created=individuals_origin_time_created,
-        organizations_origin_time_created=organizations_origin_time_created,
         individuals_number_memberships_type=individuals_number_memberships_type,
         orginizations_number_memberships_type=orginizations_number_memberships_type,
+        individuals_name_inconsistencies=individuals_name_inconsistencies,
+        individuals_wrong_user_type=individuals_wrong_user_type,
+        organizations_wrong_user_type=organizations_wrong_user_type,
     )
     # Save the rendered HTML to a file
     with open("report/report.html", "w") as f:

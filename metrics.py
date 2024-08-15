@@ -182,8 +182,8 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
         "`",
     ]
     return df[df[col].apply(lambda x: any(char in x for char in special_chars))][
-        "accountId"
-    ].values
+        ["accountId", "firstName", "lastName"]
+    ]
 
 
 def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
@@ -220,8 +220,24 @@ def get_plotly_list_nan_values(df: pd.DataFrame, columns: list) -> list:
     return [(charts[column], nan_ids_dict[column]) for column in columns]
 
 
+def get_name_inconsistencies(individuals: pd.DataFrame) -> pd.DataFrame:
+    first_name = get_special_characters_id(individuals, "firstName")
+    last_name = get_special_characters_id(individuals, "lastName")
+
+    # Concat the with an additional column stating the column of the special character
+    first_name["where"] = "firstName"
+    last_name["where"] = "lastName"
+    res = pd.concat([first_name, last_name])
+    res.reset_index(drop=True, inplace=True)
+    return res
+
+
+def get_wrong_user_type_ids(df: pd.DataFrame, expected_value: str) -> pd.DataFrame:
+    return df[df["userType"] != expected_value]["accountId"].to_list()
+
+
 if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
 
-    print(get_special_characters_id(individuals, "lastName"))
+    print(get_name_inconsistencies(individuals))
