@@ -53,7 +53,7 @@ jobs:
         echo API_API_KEY=${{ secrets.API_API_KEY }} >> /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
         cat /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
 
-    - name: Create local changes
+    - name: Extract CRM to CSV
       run: |
         python ./extract_crm_to_csv.py
 
@@ -74,7 +74,7 @@ jobs:
         from: Swiss-American Chamber of Commerce San Francisco Chapter
         body: See report in attachments.
         # html_body: file://nan_report_combined_jinja.html
-        attachments: nan_report_combined_jinja.html
+        # attachments: nan_report_combined_jinja.html
         secure: true
         ignore_cert: true
         convert_markdown: true
