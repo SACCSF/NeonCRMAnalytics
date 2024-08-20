@@ -53,6 +53,12 @@ jobs:
         echo API_API_KEY=${{ secrets.API_API_KEY }} >> /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
         cat /home/runner/work/NeonCRMAnalytics/NeonCRMAnalytics/.env
 
+    - name: Install pdoc
+      run: pip install pdoc
+
+    - name: Build documentation
+      run: pdoc *.py -o docs/ --logo "https://saccsf.com/wp-content/uploads/2015/05/saccsf-logo.jpg"
+
     - name: Extract CRM to CSV
       run: |
         python ./extract_crm_to_csv.py
@@ -60,6 +66,10 @@ jobs:
     - name: Run Report
       run: python ./create_report.py
       shell: sh
+
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/
 
     - name: Send mail
       uses: dawidd6/action-send-mail@v3
@@ -79,32 +89,6 @@ jobs:
         ignore_cert: true
         convert_markdown: true
         priority: low
-
-    - uses: actions/upload-pages-artifact@v3
-      with:
-        path: docs/
-
-  docs:
-    runs-on: ubuntu-latest
-    needs: report
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install reqirements
-        run: pip install -r ./requirements.txt
-
-      # ADJUST THIS: install all dependencies (including pdoc)
-      - run: pip install pdoc
-      # ADJUST THIS: build your documentation into docs/.
-      # We use a custom build script for pdoc itself, ideally you just run `pdoc -o docs/ ...` here.
-      - run: pdoc *.py -o docs/ --logo "https://saccsf.com/wp-content/uploads/2015/05/saccsf-logo.jpg"
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/
 
   # Deploy the artifact to GitHub pages.
   # This is a separate job so that only actions/deploy-pages has the necessary permissions.
