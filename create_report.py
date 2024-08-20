@@ -94,7 +94,7 @@ def generate_report():
         combined_new_account_registrations_plot=combined_new_account_registrations_plot,
     )
     # Save the rendered HTML to a file
-    with open("report/report.html", "w") as f:
+    with open("docs/report.html", "w") as f:
         f.write(rendered_html)
 
 
