@@ -86,7 +86,7 @@ jobs:
 
   docs:
     runs-on: ubuntu-latest
-    depends-on: report
+    needs: report
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
