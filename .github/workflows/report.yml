@@ -1,8 +1,9 @@
 name: Create Report
 
-on: [push]
-  #schedule:
-  #  - cron: '30 16 * * *'
+on:
+  schedule:
+    - cron: '00 15 * * *'
+    - cron: '00 22 * * *'
 
 jobs:
   requirements:
@@ -82,7 +83,7 @@ jobs:
         to: flavio.waser@stud.hslu.ch, nicola.hermann@stud.hslu.ch, alex.iruthayanesan@stud.hslu.ch
         # cc:
         from: Swiss-American Chamber of Commerce San Francisco Chapter
-        body: See report in attachments.
+        body: "See report online: ${{ SECRETS.GH_PAGES_URL }}"
         # html_body: file://nan_report_combined_jinja.html
         # attachments: nan_report_combined_jinja.html
         secure: true
