@@ -403,28 +403,43 @@ def get_account_creation_date_plot(
 
 def filter_non_active_accounts(df) -> pd.DataFrame:
     """
-        Filters out non-active accounts.
+    Filters out non-active accounts.
 
-        Parameters:
-        df (pd.DataFrame): The DataFrame containing the data.
+    Parameters:
+    df (pd.DataFrame): The DataFrame containing the data.
 
-        Returns:
-        pd.DataFrame: A DataFrame with only active accounts.
-        """
+    Returns:
+    pd.DataFrame: A DataFrame with only active accounts.
+    """
     return df[df["Membership Type"] != "No Membership active"]
+
+
+def get_past_member_accounts(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Returns a DataFrame with past member accounts.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame containing the data.
+
+    Returns:
+    pd.DataFrame: A DataFrame with past member accounts.
+    """
+    non_members = df[df["Membership Type"] == "No Membership active"]
+    past_members = non_members[non_members["Number of Memberships"] > 0]
+    return past_members
 
 
 def fetch_report_urls(columns, mode):
     """
-        Fetches report URLs for specified columns and mode.
+    Fetches report URLs for specified columns and mode.
 
-        Parameters:
-        columns (list): The list of columns.
-        mode (str): The mode for which the URLs are needed.
+    Parameters:
+    columns (list): The list of columns.
+    mode (str): The mode for which the URLs are needed.
 
-        Returns:
-        dict: A dictionary with columns as keys and URLs as values.
-        """
+    Returns:
+    dict: A dictionary with columns as keys and URLs as values.
+    """
     with open("references.txt", "r") as f:
         lines = f.read().splitlines()
 
@@ -446,7 +461,4 @@ if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
 
-    columns = get_quality_columns("company")
-    individuals_nan = get_plotly_list_nan_values(companies, columns, "organizations")
-
-    print(individuals_nan)
+    get_past_member_accounts(individuals)
