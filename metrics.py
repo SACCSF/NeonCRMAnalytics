@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from typing import List, Tuple
 
 
 def get_quality_columns(mode: str):
@@ -118,7 +119,7 @@ def total_income_by_member_type_ploty(df: pd.DataFrame) -> px.bar:
     return fig_html
 
 
-def membership_type_vs_events(df: pd.DataFrame):
+def membership_type_vs_events(df: pd.DataFrame) -> pd.DataFrame:
     """
     Counts the number of each member type for each event.
 
@@ -131,6 +132,10 @@ def membership_type_vs_events(df: pd.DataFrame):
     events = df["event_ids"]
     num_events = events.apply(lambda x: len(eval(x)))
     member_type = df["Membership Type"]
+
+    past_members = get_past_members(df)
+    # change the past members to "Past Member"
+    member_type[past_members.index] = "Past Member"
 
     event = num_events.unique()
     types = member_type.unique()
@@ -155,6 +160,9 @@ def membership_type_vs_events(df: pd.DataFrame):
     values_df.drop(columns=columns, inplace=True)
     # Reorder the columns
     values_df = values_df[[0, 1, 2, 3, "4+"]]
+    # Add grand totals
+    values_df["Grand Total"] = values_df.sum(axis=1)
+    values_df.loc["Grand Total"] = values_df.sum(axis=0)
     return values_df
 
 
@@ -250,11 +258,8 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
         "_",
         "+",
         "=",
-        "-",
         ":",
         ";",
-        "'",
-        '"',
         ",",
         ".",
         "<",
@@ -268,7 +273,6 @@ def get_special_characters_id(df: pd.DataFrame, col: str) -> pd.DataFrame:
         "{",
         "}",
         "~",
-        "`",
     ]
     return df[
         df[col].apply(
@@ -401,7 +405,49 @@ def get_account_creation_date_plot(
     return fig_html
 
 
-def filter_non_active_accounts(df) -> pd.DataFrame:
+def get_31_dec_term_end_table_plot(
+    df: pd.DataFrame, mode: str
+) -> Tuple[pd.DataFrame, go.Figure]:
+
+    df["Term End Date"] = pd.to_datetime(df["Term End Date"])
+
+    term_31_dec = df[
+        (df["Term End Date"].dt.month == 12) & (df["Term End Date"].dt.day == 31)
+    ]
+    if mode == "individuals":
+        term_31_dec_filtered = term_31_dec[["accountId", "firstName", "lastName"]]
+    else:
+        term_31_dec_filtered = term_31_dec[["accountId", "companyName"]]
+    # Create pie chart of percentage of members with term end date 31 Dec
+    fig = go.Figure(
+        data=[
+            go.Pie(
+                labels=[
+                    "Members with 31 Dec Term End Date",
+                    "Members with Other Term End Date",
+                ],
+                values=[
+                    len(term_31_dec_filtered),
+                    len(df) - len(term_31_dec_filtered),
+                ],
+                hole=0.3,
+            )
+        ]
+    )
+
+    fig.update_traces(
+        marker=dict(colors=["#50C878", "#FF0000"], line=dict(color="#000000", width=2)),
+        showlegend=False,
+    )
+
+    fig.show()
+
+    fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
+
+    return (term_31_dec_filtered, fig_html)
+
+
+def get_members(df) -> pd.DataFrame:
     """
     Filters out non-active accounts.
 
@@ -414,7 +460,20 @@ def filter_non_active_accounts(df) -> pd.DataFrame:
     return df[df["Membership Type"] != "No Membership active"]
 
 
-def get_past_member_accounts(df: pd.DataFrame) -> pd.DataFrame:
+def get_non_members(df) -> pd.DataFrame:
+    """
+    Filters out active accounts.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame containing the data.
+
+    Returns:
+    pd.DataFrame: A DataFrame with only non-active accounts.
+    """
+    return df[df["Membership Type"] == "No Membership active"]
+
+
+def get_past_members(df: pd.DataFrame) -> pd.DataFrame:
     """
     Returns a DataFrame with past member accounts.
 
@@ -424,7 +483,7 @@ def get_past_member_accounts(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
     pd.DataFrame: A DataFrame with past member accounts.
     """
-    non_members = df[df["Membership Type"] == "No Membership active"]
+    non_members = get_non_members(df)
     past_members = non_members[non_members["Number of Memberships"] > 0]
     return past_members
 
@@ -448,7 +507,6 @@ def fetch_report_urls(columns, mode):
     for column in columns:
         for line in lines:
             name, url = line.split(";")
-            # breakpoint()
             if not mode in name:
                 continue
             if not column in name:
@@ -460,5 +518,3 @@ def fetch_report_urls(columns, mode):
 if __name__ == "__main__":
     individuals = pd.read_csv("individuals.csv")
     companies = pd.read_csv("companies.csv")
-
-    get_past_member_accounts(individuals)

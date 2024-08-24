@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import plotly.graph_objects as go
 from metrics import *
+import json
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -22,77 +23,70 @@ def generate_report():
     template = env.get_template("report/template.html")
 
     export_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    # Import json file as dictionary
+    with open("report/menu.json") as f:
+        individuals = json.load(f)
 
     individuals_df = pd.read_csv("individuals.csv")
     companies_df = pd.read_csv("companies.csv")
 
-    individuals_members = filter_non_active_accounts(individuals_df)
-    companies_members = filter_non_active_accounts(companies_df)
+    individual_members = get_members(individuals_df)
+    company_members = get_members(companies_df)
 
-    individuals_nan = get_plotly_list_nan_values(
-        individuals_df, quality_columns_individuals, "individuals"
+    individual_non_members = get_non_members(individuals_df)
+    company_non_members = get_non_members(companies_df)
+
+    individual_past_members = get_past_members(individuals_df)
+    company_past_members = get_past_members(companies_df)
+
+    all_individual_membes = pd.concat([individual_members, individual_past_members])
+    all_company_members = pd.concat([company_members, company_past_members])
+
+    im_fee_vs_membership = fee_vs_member_type(individual_members)
+    cm_fee_vs_membership = fee_vs_member_type(company_members)
+
+    idf_event_attendance = membership_type_vs_events(individuals_df)
+    cdf_event_attendance = membership_type_vs_events(companies_df)
+
+    im_incomplete_data = get_plotly_list_nan_values(
+        individual_members, quality_columns_individuals, "individuals"
     )
-    organizations_nan = get_plotly_list_nan_values(
-        companies_df, quality_columns_companies, "organizations"
+    cm_incomplete_data = get_plotly_list_nan_values(
+        company_members, quality_columns_companies, "organizations"
     )
-
-    individuals_fee_membership = fee_vs_member_type(individuals_df)
-    organizations_fee_membership = fee_vs_member_type(companies_df)
-
-    individuals_fee_membership_missmatch = fee_vs_member_type_missmatch(
-        individuals_fee_membership
+    inm_incomplete_data = get_plotly_list_nan_values(
+        individual_non_members, quality_columns_individuals, "individuals"
     )
-    organizations_fee_membership_missmatch = fee_vs_member_type_missmatch(
-        organizations_fee_membership
-    )
-
-    individuals_income_membership = total_income_by_member_type_ploty(individuals_df)
-    organizations_income_membership = total_income_by_member_type_ploty(companies_df)
-
-    individuals_membership_events_attended = membership_type_vs_events(individuals_df)
-    organizations_membership_events_attended = membership_type_vs_events(companies_df)
-
-    individuals_number_memberships_type = number_of_membership_vs_membership_type(
-        individuals_df
-    )
-    orginizations_number_memberships_type = number_of_membership_vs_membership_type(
-        companies_df
+    cnm_incomplete_data = get_plotly_list_nan_values(
+        company_non_members, quality_columns_companies, "organizations"
     )
 
-    individuals_name_inconsistencies = get_name_inconsistencies(individuals_df)
+    im_inconsistent_data = get_name_inconsistencies(individual_members)
+    inm_inconsistent_data = get_name_inconsistencies(individual_non_members)
 
-    individuals_wrong_user_type = get_wrong_user_type_ids(individuals_df, "INDIVIDUAL")
-    organizations_wrong_user_type = get_wrong_user_type_ids(
-        companies_df, "COMPANY"
+    im_term_end_table_plot = get_31_dec_term_end_table_plot(
+        individual_members, "individuals"
+    )
+    cm_term_end_table_plot = get_31_dec_term_end_table_plot(
+        company_members, "organizations"
     )
 
-    combined_new_account_registrations_plot = get_account_creation_date_plot(
-        individuals_df, companies_df
+    members_account_creation = get_account_creation_date_plot(
+        individual_members, company_members
     )
 
-    rendered_html = template.render(
-        export_date=export_date,
-        individuals_df=individuals_df,
-        organizations_df=companies_df,
-        individuals_members=individuals_members,
-        organizations_members=companies_members,
-        individuals_nan=individuals_nan,
-        organizations_nan=organizations_nan,
-        individuals_fee_membership=individuals_fee_membership,
-        organizations_fee_membership=organizations_fee_membership,
-        individuals_fee_membership_missmatch=individuals_fee_membership_missmatch,
-        organizations_fee_membership_missmatch=organizations_fee_membership_missmatch,
-        individuals_income_membership=individuals_income_membership,
-        organizations_income_membership=organizations_income_membership,
-        individuals_membership_events_attended=individuals_membership_events_attended,
-        organizations_membership_events_attended=organizations_membership_events_attended,
-        individuals_number_memberships_type=individuals_number_memberships_type,
-        orginizations_number_memberships_type=orginizations_number_memberships_type,
-        individuals_name_inconsistencies=individuals_name_inconsistencies,
-        individuals_wrong_user_type=individuals_wrong_user_type,
-        organizations_wrong_user_type=organizations_wrong_user_type,
-        combined_new_account_registrations_plot=combined_new_account_registrations_plot,
+    all_account_creation = get_account_creation_date_plot(
+        all_individual_membes, all_company_members
     )
+
+    im_total_income = total_income_by_member_type_ploty(
+        individual_members, "individuals"
+    )
+    cm_total_income = total_income_by_member_type_ploty(
+        company_members, "organizations"
+    )
+
+    return
     # Save the rendered HTML to a file
     with open("docs/report.html", "w") as f:
         f.write(rendered_html)
