@@ -361,9 +361,7 @@ def get_wrong_user_type_ids(df: pd.DataFrame, expected_value: str) -> pd.DataFra
     return df[df["userType"] != expected_value]["accountId"].to_list()
 
 
-def get_account_creation_date_plot(
-    individuals: pd.DataFrame, companies: pd.DataFrame
-) -> go.Figure:
+def get_account_creation_date_plot(df: pd.DataFrame) -> go.Figure:
     """
     Plots account creation dates by quarter.
 
@@ -374,7 +372,7 @@ def get_account_creation_date_plot(
     Returns:
     go.Figure: A Plotly figure with account creation dates by quarter.
     """
-    accounts = pd.concat([individuals, companies]).reset_index(drop=True)
+    accounts = df.copy()
     accounts["timestamps.createdDateTime"] = pd.to_datetime(
         accounts["timestamps.createdDateTime"]
     )
@@ -409,10 +407,13 @@ def get_31_dec_term_end_table_plot(
     df: pd.DataFrame, mode: str
 ) -> Tuple[pd.DataFrame, go.Figure]:
 
-    df["Term End Date"] = pd.to_datetime(df["Term End Date"])
+    accounts = df.copy()
 
-    term_31_dec = df[
-        (df["Term End Date"].dt.month == 12) & (df["Term End Date"].dt.day == 31)
+    accounts["Term End Date"] = pd.to_datetime(df["Term End Date"])
+
+    term_31_dec = accounts[
+        (accounts["Term End Date"].dt.month == 12)
+        & (accounts["Term End Date"].dt.day == 31)
     ]
     if mode == "individuals":
         term_31_dec_filtered = term_31_dec[["accountId", "firstName", "lastName"]]
@@ -428,7 +429,7 @@ def get_31_dec_term_end_table_plot(
                 ],
                 values=[
                     len(term_31_dec_filtered),
-                    len(df) - len(term_31_dec_filtered),
+                    len(accounts) - len(term_31_dec_filtered),
                 ],
                 hole=0.3,
             )
@@ -439,8 +440,6 @@ def get_31_dec_term_end_table_plot(
         marker=dict(colors=["#50C878", "#FF0000"], line=dict(color="#000000", width=2)),
         showlegend=False,
     )
-
-    fig.show()
 
     fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
 

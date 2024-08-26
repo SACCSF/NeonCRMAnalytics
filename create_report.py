@@ -25,7 +25,7 @@ def generate_report():
     export_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     # Import json file as dictionary
     with open("report/menu.json") as f:
-        individuals = json.load(f)
+        menu_json = json.load(f)
 
     individuals_df = pd.read_csv("individuals.csv")
     companies_df = pd.read_csv("companies.csv")
@@ -42,51 +42,102 @@ def generate_report():
     all_individual_members = pd.concat([individual_members, individual_past_members])
     all_company_members = pd.concat([company_members, company_past_members])
 
-    im_fee_vs_membership = fee_vs_member_type(individual_members)
-    cm_fee_vs_membership = fee_vs_member_type(company_members)
-
-    idf_event_attendance = membership_type_vs_events(individuals_df)
-    cdf_event_attendance = membership_type_vs_events(companies_df)
-
-    im_incomplete_data = get_plotly_list_nan_values(
-        individual_members, quality_columns_individuals, "individuals"
+    menu_json["data"]["individuals"]["feeVsMembers"]["members"]["data"] = (
+        fee_vs_member_type(individual_members)
     )
-    cm_incomplete_data = get_plotly_list_nan_values(
-        company_members, quality_columns_companies, "organizations"
-    )
-    inm_incomplete_data = get_plotly_list_nan_values(
-        individual_non_members, quality_columns_individuals, "individuals"
-    )
-    cnm_incomplete_data = get_plotly_list_nan_values(
-        company_non_members, quality_columns_companies, "organizations"
+    menu_json["data"]["organizations"]["feeVsMembers"]["members"]["data"] = (
+        fee_vs_member_type(company_members)
     )
 
-    im_inconsistent_data = get_name_inconsistencies(individual_members)
-    inm_inconsistent_data = get_name_inconsistencies(individual_non_members)
-
-    im_term_end_table_plot = get_31_dec_term_end_table_plot(
-        individual_members, "individuals"
+    menu_json["data"]["individuals"]["accountVsEvents"]["all"] = (
+        membership_type_vs_events(individuals_df)
     )
-    cm_term_end_table_plot = get_31_dec_term_end_table_plot(
-        company_members, "organizations"
+    menu_json["data"]["organizations"]["accountVsEvents"]["all"] = (
+        membership_type_vs_events(companies_df)
     )
 
-    members_account_creation = get_account_creation_date_plot(
-        individual_members, company_members
+    menu_json["data"]["individuals"]["incompleteData"]["members"]["data"] = (
+        get_plotly_list_nan_values(
+            individual_members, quality_columns_individuals, "individuals"
+        )
+    )
+    menu_json["data"]["organizations"]["incompleteData"]["members"]["data"] = (
+        get_plotly_list_nan_values(
+            company_members, quality_columns_companies, "organizations"
+        )
+    )
+    menu_json["data"]["individuals"]["incompleteData"]["nonMembers"]["data"] = (
+        get_plotly_list_nan_values(
+            individual_non_members, quality_columns_individuals, "individuals"
+        )
+    )
+    menu_json["data"]["organizations"]["incompleteData"]["nonMembers"]["data"] = (
+        get_plotly_list_nan_values(
+            company_non_members, quality_columns_companies, "organizations"
+        )
+    )
+    menu_json["data"]["individuals"]["incompleteData"]["all"]["data"] = (
+        get_plotly_list_nan_values(
+            individuals_df, quality_columns_individuals, "individuals"
+        )
+    )
+    menu_json["data"]["organizations"]["incompleteData"]["all"]["data"] = (
+        get_plotly_list_nan_values(
+            companies_df, quality_columns_companies, "organizations"
+        )
     )
 
-    all_account_creation = get_account_creation_date_plot(
-        all_individual_members, all_company_members
+    menu_json["data"]["individuals"]["inconsistantData"]["members"]["data"] = (
+        get_name_inconsistencies(individual_members)
+    )
+    menu_json["data"]["individuals"]["inconsistantData"]["nonMembers"]["data"] = (
+        get_name_inconsistencies(individual_non_members)
+    )
+    menu_json["data"]["individuals"]["inconsistantData"]["all"]["data"] = (
+        get_name_inconsistencies(individuals_df)
     )
 
-    im_total_income = total_income_by_member_type_ploty(
-        individual_members, "individuals"
-    )
-    cm_total_income = total_income_by_member_type_ploty(
-        company_members, "organizations"
+    menu_json["data"]["individuals"]["termEndDecember31"]["members"]["data"] = (
+        get_31_dec_term_end_table_plot(individual_members, "individuals")
     )
 
-    return
+    menu_json["data"]["organizations"]["termEndDecember31"]["members"]["data"] = (
+        get_31_dec_term_end_table_plot(company_members, "organizations")
+    )
+
+    menu_json["data"]["individuals"]["memberCreationDate"]["members"]["data"] = (
+        get_account_creation_date_plot(all_individual_members)
+    )
+
+    menu_json["data"]["organizations"]["memberCreationDate"]["members"]["data"] = (
+        get_account_creation_date_plot(company_members)
+    )
+
+    menu_json["data"]["individuals"]["memberCreationDate"]["pastMembers"]["data"] = (
+        get_account_creation_date_plot(individual_past_members)
+    )
+
+    menu_json["data"]["organizations"]["memberCreationDate"]["pastMembers"]["data"] = (
+        get_account_creation_date_plot(company_past_members)
+    )
+
+    menu_json["data"]["individuals"]["memberCreationDate"]["both"]["data"] = (
+        get_account_creation_date_plot(all_individual_members)
+    )
+
+    menu_json["data"]["organizations"]["memberCreationDate"]["both"]["data"] = (
+        get_account_creation_date_plot(all_company_members)
+    )
+
+    menu_json["data"]["individuals"]["totalIncome"]["members"]["data"] = (
+        total_income_by_member_type_ploty(individual_members)
+    )
+    menu_json["data"]["organizations"]["totalIncome"]["members"]["data"] = (
+        total_income_by_member_type_ploty(company_members)
+    )
+
+    rendered_html = template.render(export_date=export_date, data=menu_json["data"])
+
     # Save the rendered HTML to a file
     with open("docs/report.html", "w") as f:
         f.write(rendered_html)
