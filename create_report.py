@@ -39,7 +39,7 @@ def generate_report():
     individual_past_members = get_past_members(individuals_df)
     company_past_members = get_past_members(companies_df)
 
-    all_individual_membes = pd.concat([individual_members, individual_past_members])
+    all_individual_members = pd.concat([individual_members, individual_past_members])
     all_company_members = pd.concat([company_members, company_past_members])
 
     im_fee_vs_membership = fee_vs_member_type(individual_members)
@@ -76,7 +76,7 @@ def generate_report():
     )
 
     all_account_creation = get_account_creation_date_plot(
-        all_individual_membes, all_company_members
+        all_individual_members, all_company_members
     )
 
     im_total_income = total_income_by_member_type_ploty(
