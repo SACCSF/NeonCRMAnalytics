@@ -201,19 +201,19 @@
           "data": "",
           "button": "All",
           "uniqueId": "organizationIncompleteDataAll",
-          "chartType": "pieAndUrlList"
+          "chartType": "pieAndNeonList"
         },
         "members": {
           "data": "",
           "button": "Members",
           "uniqueId": "organizationIncompleteDataMembers",
-          "chartType": "pieAndUrlList"
+          "chartType": "pieAndNeonList"
         },
         "nonMembers": {
           "data": "",
           "button": "Non Members",
           "uniqueId": "organizationIncompleteDataNonMembers",
-          "chartType": "pieAndUrlList"
+          "chartType": "pieAndNeonList"
         }
       },
       "termEndDecember31": {
