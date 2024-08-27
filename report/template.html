@@ -51,6 +51,7 @@
             <div class="container">
                 <h1>{{ report.title }}</h1>
                 <p>{{ report.description }}</p>
+
                 <!-- Menu for all account types -->
                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                     {% for rep in report.accountTypes %}
@@ -154,6 +155,36 @@
                         </div>
                     </div>
                     {% endif %}
+
+                    {% if report[rep].chartType == 'pieAndTable' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    {% for title in report[rep].data.columns %}
+                                    <th scope="col">{{ title }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for idx, row in report[rep].data.iterrows() %}
+                                <tr>
+                                    <th scope="row">{{ idx }}</th>
+                                    {% for col in report[rep].data.columns %}
+                                    <td>{{ report[rep].data.at[idx, col] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
 
                     {% endfor %}
                 </div>
