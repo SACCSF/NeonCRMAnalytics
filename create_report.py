@@ -49,10 +49,10 @@ def generate_report():
         fee_vs_member_type(company_members)
     )
 
-    menu_json["data"]["individuals"]["accountVsEvents"]["all"] = (
+    menu_json["data"]["individuals"]["accountVsEvents"]["all"]["data"] = (
         membership_type_vs_events(individuals_df)
     )
-    menu_json["data"]["organizations"]["accountVsEvents"]["all"] = (
+    menu_json["data"]["organizations"]["accountVsEvents"]["all"]["data"] = (
         membership_type_vs_events(companies_df)
     )
 
