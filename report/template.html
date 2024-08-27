@@ -9,11 +9,6 @@
     <title>Neon CRM Report</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        modal {
-overflow-y:auto;
-}
-    </style>
 </head>
 
 <body>
@@ -56,7 +51,7 @@ overflow-y:auto;
     <div class="modal fade" id="{{ report.uniqueId }}" aria-hidden="true"
          aria-labelledby="exampleModalToggleLabel"
          tabindex="-1">
-        <div class="modal-dialog modal-fullscreen">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <nav class="navbar navbar-expand-lg bg-body-tertiary modal-header">
                     <div class="container-fluid">
@@ -84,13 +79,12 @@ overflow-y:auto;
                                 <div class="modal-body collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                                      data-bs-parent="#diagrams">
                                     {% if report[rep].chartType == 'pieAndTable' %}
-                                    <div class="container-fluid">
+                                    <div class="container">
                                         <div class="row">
-
                                             {% for chart in report[rep].data %}
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-3" id="myModal">
                                                 <h3>{{ chart.2 }}</h3>
-                                                {{ chart.0|safe }}
+                                                <div id="myDiv" style="width: 100%;">{{ chart.0|safe }}</div>
 
                                                 <a href="{{ chart.1 }}" target="_blank">
                                                     <button type="button" class="btn btn-primary">
@@ -103,6 +97,9 @@ overflow-y:auto;
 
                                         </div>
                                     </div>
+                                    {% endif %}
+                                    {% if report[rep].chartType == 'pivot' %}
+
                                     {% endif %}
                                 </div>
                                 {% endfor %}
@@ -118,7 +115,7 @@ overflow-y:auto;
     </div>
     {% endfor %}
 </div>
-
 </div>
 </body>
+
 </html>
