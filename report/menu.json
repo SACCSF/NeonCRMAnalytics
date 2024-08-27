@@ -51,19 +51,19 @@
           "data": "",
           "button": "All",
           "uniqueId": "individualIncompleteDataAll",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         },
         "members": {
           "data": "",
           "button": "Members",
           "uniqueId": "individualIncompleteDataMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         },
         "nonMembers": {
           "data": "",
           "button": "Non Members",
           "uniqueId": "individualIncompleteDataNonMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         }
       },
       "inconsistantData": {
@@ -79,19 +79,19 @@
           "data": "",
           "button": "All",
           "uniqueId": "individualInconsistantDataAll",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndTableList"
         },
         "members": {
           "data": "",
           "button": "Members",
           "uniqueId": "individualInconsistantDataMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndTableList"
         },
         "nonMembers": {
           "data": "",
           "button": "Non Members",
           "uniqueId": "individualInconsistantDataNonMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndTableList"
         }
       },
       "termEndDecember31": {
@@ -105,7 +105,7 @@
           "data": "",
           "button": "Members",
           "uniqueId": "individualTermEndDecember31Members",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndUrl"
         }
       },
       "memberCreationDate": {
@@ -201,19 +201,19 @@
           "data": "",
           "button": "All",
           "uniqueId": "organizationIncompleteDataAll",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         },
         "members": {
           "data": "",
           "button": "Members",
           "uniqueId": "organizationIncompleteDataMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         },
         "nonMembers": {
           "data": "",
           "button": "Non Members",
           "uniqueId": "organizationIncompleteDataNonMembers",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndNeonList"
         }
       },
       "termEndDecember31": {
@@ -227,7 +227,7 @@
           "data": "",
           "button": "Members",
           "uniqueId": "organizationTermEndDecember31Members",
-          "chartType": "pieAndTable"
+          "chartType": "pieAndUrl"
         }
       },
       "memberCreationDate": {

@@ -5,3 +5,5 @@ reporting_individuals_missing_companyName;https://saccsf.app.neoncrm.com/np/admi
 reporting_organizations_missing_email;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300040
 reporting_organizations_missing_primaryContactAccountId;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300041
 reporting_organizations_missing_companyName;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300042
+reporting_individuals_termEndDec31;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300044
+reporting_organizations_termEndDec31;https://saccsf.app.neoncrm.com/np/admin/report/searchCriteriaEdit.do?configId=300045
