@@ -137,7 +137,7 @@ def generate_report():
     )
 
     rendered_html = template.render(export_date=export_date, data=menu_json["data"])
-
+    print(menu_json)
     # Save the rendered HTML to a file
     with open("docs/report.html", "w") as f:
         f.write(rendered_html)

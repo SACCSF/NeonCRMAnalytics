@@ -12,7 +12,7 @@
 </head>
 
 <body>
-<div class="container py-3">
+<div class="container">
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
@@ -21,10 +21,10 @@
         </div>
     </header>
 
-    <div class="row" id="group">
+    <div id="group">
 
         <!-- CARD -->
-        <div class="collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
+        <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
             <h1>Individuals</h1>
             {% for report_key in data.individuals.list %}
             {% set report = data.individuals[report_key] %}
@@ -89,6 +89,72 @@
                         </div>
                     </div>
                     {% endif %}
+
+                    {% if report[rep].chartType == 'pivot' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        {% for title in report[rep].data.T.columns %}
+                                        <th scope="col">{{ title }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- individuals_fee_membership.iloc[0]['0.0$'] -->
+
+                                    {% for idx, row in report[rep].data.T.iterrows() %}
+                                    <tr>
+                                        <th scope="row">{{ idx }}</th>
+                                        {% for col in report[rep].data.T.columns %}
+                                        {% if report[rep].data.at[col, idx] > 0.0 %}
+                                        <td>{{ report[rep].data.at[col, idx] }}</td>
+                                        {% else %}
+                                        <td></td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'table' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    {% for title in report[rep].data.columns %}
+                                    <th scope="col">{{ title }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for idx, row in report[rep].data.iterrows() %}
+                                <tr>
+                                    <th scope="row">{{ idx }}</th>
+                                    {% for col in report[rep].data.columns %}
+                                    <td>{{ report[rep].data.at[idx, col] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
                     {% endfor %}
                 </div>
             </div>
