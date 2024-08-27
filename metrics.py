@@ -320,7 +320,6 @@ def get_plotly_list_nan_values(df: pd.DataFrame, columns: list, mode: str) -> li
             ),
             showlegend=False,
         )
-        plotly_fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
         chart_html = plotly_fig.to_html(full_html=False, include_plotlyjs=False)
         charts[column] = chart_html
     return [(charts[column], url_dict[column], str(column)) for column in columns]

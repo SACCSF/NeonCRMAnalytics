@@ -16,7 +16,7 @@
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
-                <span class="fs-4">NEON CRM Automatic Report | {{ export_date }}</span>
+                <span class="fs-2">NEON CRM Automatic Report | {{ export_date }}</span>
             </a>
         </div>
     </header>
@@ -73,6 +73,8 @@
                     {% if report[rep].chartType == 'pieAndNeonList' %}
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
                         <div class="container">
                             <div class="row">
                                 {% for chart in report[rep].data %}
@@ -94,6 +96,8 @@
                     {% if report[rep].chartType == 'pivot' %}
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table">
@@ -130,6 +134,8 @@
                     {% if report[rep].chartType == 'table' %}
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
                         <div class="row">
                             <table class="table">
                                 <thead>
@@ -156,9 +162,154 @@
                     </div>
                     {% endif %}
 
-                    {% if report[rep].chartType == 'pieAndTable' %}
+                    {% if report[rep].chartType == 'pieAndNeon' %}
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="row">
+                            {{ report[rep].data.0 }}
+                            <a href="{{ report[rep].data.1 }}" target="_blank">
+                                <button type="button" class="btn btn-primary">
+                                    To Neon Report
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'bar' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="row">
+                        {{ report[rep].data }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- End Block -->
+        {% endfor %}
+
+            <!-- CARD -->
+        <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
+            <h1>Organizations</h1>
+            {% for report_key in data.organizations.list %}
+            {% set report = data.organizations[report_key] %}
+            <div class="col-sm-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ report.title }}</h5>
+                        <p class="card-text">{{ report.description }}</p>
+                        <button class="btn btn-primary" data-bs-target="#{{ report.uniqueId }}"
+                                data-bs-toggle="collapse">
+                            Open report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- END OF CARD -->
+        </div>
+
+        {% for report_key in data.organizations.list %}
+        {% set report = data.organizations[report_key] %}
+        <!-- Block -->
+        <div class="collapse multi-collapse" id="{{ report.uniqueId }}" aria-hidden="true" data-bs-parent="#group">
+            <div class="container">
+                <h1>{{ report.title }}</h1>
+                <p>{{ report.description }}</p>
+
+                <!-- Menu for all account types -->
+                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                    {% for rep in report.accountTypes %}
+                    <input type="checkbox" class="btn-check" id="btn{{ report[rep].uniqueId }}"
+                           autocomplete="off" href="#{{ report[rep].uniqueId }}"
+                           aria-controls="{{ report[rep].uniqueId }}" aria-expanded="false"
+                           data-bs-toggle="collapse">
+                    <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
+                        report[rep].button }}</label>
+                    {% endfor %}
+                    <input type="checkbox" class="btn-check" id="btnhome"
+                           autocomplete="off" href="#home"
+                           aria-controls="home" aria-expanded="false"
+                           data-bs-toggle="collapse">
+                    <label class="btn btn-outline-secondary" for="btnhome">Home</label>
+                </div>
+                <div id="diagrams">
+                    {% for rep in report.accountTypes %}
+                    {% if report[rep].chartType == 'pieAndNeonList' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="container">
+                            <div class="row">
+                                {% for chart in report[rep].data %}
+                                <div class="col-md-6 mb-3">
+                                    <h3>{{ chart.2 }}</h3>
+                                    {{ chart.0|safe }}
+                                    <a href="{{ chart.1 }}" target="_blank">
+                                        <button type="button" class="btn btn-primary">
+                                            To Neon Report
+                                        </button>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'pivot' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        {% for title in report[rep].data.T.columns %}
+                                        <th scope="col">{{ title }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- organizations_fee_membership.iloc[0]['0.0$'] -->
+
+                                    {% for idx, row in report[rep].data.T.iterrows() %}
+                                    <tr>
+                                        <th scope="row">{{ idx }}</th>
+                                        {% for col in report[rep].data.T.columns %}
+                                        {% if report[rep].data.at[col, idx] > 0.0 %}
+                                        <td>{{ report[rep].data.at[col, idx] }}</td>
+                                        {% else %}
+                                        <td></td>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'table' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
                         <div class="row">
                             <table class="table">
                                 <thead>
@@ -181,6 +332,33 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'pieAndNeon' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="row">
+                            {{ report[rep].data.0 }}
+                            <a href="{{ report[rep].data.1 }}" target="_blank">
+                                <button type="button" class="btn btn-primary">
+                                    To Neon Report
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if report[rep].chartType == 'bar' %}
+                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                         data-bs-parent="#diagrams">
+                        <hr>
+                        <h3>{{ report[rep].button  }}</h3>
+                        <div class="row">
+                        {{ report[rep].data }}
                         </div>
                     </div>
                     {% endif %}
