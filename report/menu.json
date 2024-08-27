@@ -1,110 +1,276 @@
-{"data":
-  {"individuals":
-    {"list":["feeVsMembers","accountVsEvents","incompleteData","inconsistantData","termEndDecember31","memberCreationDate","totalIncome"],
-      "feeVsMembers":
-      {"title":"Fee vs Members",
-      "uniqueId": "individualFeeVsMembers",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"individualFeeVsMembersMembers", "chartType":"pivot"}
+{
+  "data": {
+    "individuals": {
+      "list": [
+        "feeVsMembers",
+        "accountVsEvents",
+        "incompleteData",
+        "inconsistantData",
+        "termEndDecember31",
+        "memberCreationDate",
+        "totalIncome"
+      ],
+      "feeVsMembers": {
+        "title": "Fee vs Members",
+        "uniqueId": "individualFeeVsMembers",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualFeeVsMembersMembers",
+          "chartType": "pivot"
+        }
       },
-    "accountVsEvents":
-      {"title":"Event Attendance",
-      "uniqueId": "individualAccountVsEvents",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["all"],
-      "all": {"data":"","button":"All","uniqueId":"individualAccountVsEventsAll", "chartType":"pivot"}
+      "accountVsEvents": {
+        "title": "Event Attendance",
+        "uniqueId": "individualAccountVsEvents",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "all"
+        ],
+        "all": {
+          "data": "",
+          "button": "All",
+          "uniqueId": "individualAccountVsEventsAll",
+          "chartType": "pivot"
+        }
       },
-    "incompleteData":
-      {"title":"Incomplete Data",
-      "uniqueId": "individualIncompleteData",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members", "nonMembers", "all"],
-      "all": {"data":"","button":"All","uniqueId":"individualIncompleteDataAll", "chartType":"pieAndTable"},
-      "members": {"data":"","button":"Members","uniqueId":"individualIncompleteDataMembers", "chartType":"pieAndTable"},
-      "nonMembers": {"data":"","button":"Non Members","uniqueId":"individualIncompleteDataNonMembers", "chartType":"pieAndTable"}
+      "incompleteData": {
+        "title": "Incomplete Data",
+        "uniqueId": "individualIncompleteData",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members",
+          "nonMembers",
+          "all"
+        ],
+        "all": {
+          "data": "",
+          "button": "All",
+          "uniqueId": "individualIncompleteDataAll",
+          "chartType": "pieAndTable"
+        },
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualIncompleteDataMembers",
+          "chartType": "pieAndTable"
+        },
+        "nonMembers": {
+          "data": "",
+          "button": "Non Members",
+          "uniqueId": "individualIncompleteDataNonMembers",
+          "chartType": "pieAndTable"
+        }
       },
-    "inconsistantData":
-      {"title":"Inconsistant Data",
-      "uniqueId": "individualInconsistantData",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members", "nonMembers", "all"],
-      "all": {"data":"","button":"All","uniqueId":"individualInconsistantDataAll", "chartType":"pieAndTable"},
-      "members": {"data":"","button":"Members","uniqueId":"individualInconsistantDataMembers", "chartType":"pieAndTable"},
-      "nonMembers": {"data":"","button":"Non Members","uniqueId":"individualInconsistantDataNonMembers", "chartType":"pieAndTable"}
+      "inconsistantData": {
+        "title": "Inconsistant Data",
+        "uniqueId": "individualInconsistantData",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members",
+          "nonMembers",
+          "all"
+        ],
+        "all": {
+          "data": "",
+          "button": "All",
+          "uniqueId": "individualInconsistantDataAll",
+          "chartType": "pieAndTable"
+        },
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualInconsistantDataMembers",
+          "chartType": "pieAndTable"
+        },
+        "nonMembers": {
+          "data": "",
+          "button": "Non Members",
+          "uniqueId": "individualInconsistantDataNonMembers",
+          "chartType": "pieAndTable"
+        }
       },
-    "termEndDecember31":
-      {"title":"Term End December 31",
-      "uniqueId": "individualTermEndDecember31",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"individualTermEndDecember31Members", "chartType":"pieAndTable"}
+      "termEndDecember31": {
+        "title": "Term End December 31",
+        "uniqueId": "individualTermEndDecember31",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualTermEndDecember31Members",
+          "chartType": "pieAndTable"
+        }
       },
-    "memberCreationDate":
-      {"title":"Member Creation Date",
-      "uniqueId": "individualMemberCreationDate",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members", "pastMembers", "both"],
-      "members": {"data":"", "button": "Members","uniqueId":"individualMemberCreationDateMembers", "chartType":"bar"},
-      "pastMembers": {"data":"", "button": "Past Members","uniqueId":"individualMemberCreationDatePastMembers", "chartType":"bar"},
-      "both": {"data":"", "button": "Both","uniqueId":"individualMemberCreationDateBoth", "chartType":"bar"}
+      "memberCreationDate": {
+        "title": "Member Creation Date",
+        "uniqueId": "individualMemberCreationDate",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members",
+          "pastMembers",
+          "both"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualMemberCreationDateMembers",
+          "chartType": "bar"
+        },
+        "pastMembers": {
+          "data": "",
+          "button": "Past Members",
+          "uniqueId": "individualMemberCreationDatePastMembers",
+          "chartType": "bar"
+        },
+        "both": {
+          "data": "",
+          "button": "Both",
+          "uniqueId": "individualMemberCreationDateBoth",
+          "chartType": "bar"
+        }
       },
-    "totalIncome":
-      {"title":"Total Income by Membership",
-      "uniqueId": "individualTotalIncome",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"individualTotalIncomeMembers", "chartType":"bar"}
+      "totalIncome": {
+        "title": "Total Income by Membership",
+        "uniqueId": "individualTotalIncome",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "individualTotalIncomeMembers",
+          "chartType": "bar"
+        }
       }
-      
     },
-    "organizations":
-    {"list":["feeVsMembers","accountVsEvents","incompleteData","termEndDecember31","memberCreationDate","totalIncome"],
-      "feeVsMembers":
-      {"title":"Fee vs Members",
-      "uniqueId": "organizationFeeVsMembers",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"organizationFeeVsMembersMembers", "chartType":"pivot"}
+    "organizations": {
+      "list": [
+        "feeVsMembers",
+        "accountVsEvents",
+        "incompleteData",
+        "termEndDecember31",
+        "memberCreationDate",
+        "totalIncome"
+      ],
+      "feeVsMembers": {
+        "title": "Fee vs Members",
+        "uniqueId": "organizationFeeVsMembers",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "organizationFeeVsMembersMembers",
+          "chartType": "pivot"
+        }
       },
-    "accountVsEvents":
-      {"title":"Event Attendance",
-      "uniqueId": "organizationAccountVsEvents",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["all"],
-      "all": {"data":"","button":"All","uniqueId":"organizationAccountVsEventsAll", "chartType":"pivot"}
+      "accountVsEvents": {
+        "title": "Event Attendance",
+        "uniqueId": "organizationAccountVsEvents",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "all"
+        ],
+        "all": {
+          "data": "",
+          "button": "All",
+          "uniqueId": "organizationAccountVsEventsAll",
+          "chartType": "pivot"
+        }
       },
-    "incompleteData":
-      {"title":"Incomplete Data",
-      "uniqueId": "organizationIncompleteData",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members", "nonMembers", "all"],
-      "all": {"data":"","button":"All","uniqueId":"organizationIncompleteDataAll", "chartType":"pieAndTable"},
-      "members": {"data":"","button":"Members","uniqueId":"organizationIncompleteDataMembers", "chartType":"pieAndTable"},
-      "nonMembers": {"data":"","button":"Non Members","uniqueId":"organizationIncompleteDataNonMembers", "chartType":"pieAndTable"}
+      "incompleteData": {
+        "title": "Incomplete Data",
+        "uniqueId": "organizationIncompleteData",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members",
+          "nonMembers",
+          "all"
+        ],
+        "all": {
+          "data": "",
+          "button": "All",
+          "uniqueId": "organizationIncompleteDataAll",
+          "chartType": "pieAndTable"
+        },
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "organizationIncompleteDataMembers",
+          "chartType": "pieAndTable"
+        },
+        "nonMembers": {
+          "data": "",
+          "button": "Non Members",
+          "uniqueId": "organizationIncompleteDataNonMembers",
+          "chartType": "pieAndTable"
+        }
       },
-    "termEndDecember31":
-      {"title":"Term End December 31",
-      "uniqueId": "organizationTermEndDecember31",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"organizationTermEndDecember31Members", "chartType":"pieAndTable"}
+      "termEndDecember31": {
+        "title": "Term End December 31",
+        "uniqueId": "organizationTermEndDecember31",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "organizationTermEndDecember31Members",
+          "chartType": "pieAndTable"
+        }
       },
-    "memberCreationDate":
-      {"title":"Member Creation Date",
-      "uniqueId": "organizationMemberCreationDate",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members", "pastMembers", "both"],
-      "members": {"data":"", "button": "Members","uniqueId":"organizationMemberCreationDateMembers", "chartType":"bar"},
-      "pastMembers": {"data":"", "button": "Past Members","uniqueId":"organizationMemberCreationDatePastMembers", "chartType":"bar"},
-      "both": {"data":"", "button": "Both","uniqueId":"organizationMemberCreationDateBoth", "chartType":"bar"}
+      "memberCreationDate": {
+        "title": "Member Creation Date",
+        "uniqueId": "organizationMemberCreationDate",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members",
+          "pastMembers",
+          "both"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "organizationMemberCreationDateMembers",
+          "chartType": "bar"
+        },
+        "pastMembers": {
+          "data": "",
+          "button": "Past Members",
+          "uniqueId": "organizationMemberCreationDatePastMembers",
+          "chartType": "bar"
+        },
+        "both": {
+          "data": "",
+          "button": "Both",
+          "uniqueId": "organizationMemberCreationDateBoth",
+          "chartType": "bar"
+        }
       },
-    "totalIncome":
-      {"title":"Total Income by Membership",
-      "uniqueId": "organizationTotalIncome",
-      "description":"This report shows the fee collected vs the number of members in the club.",
-      "accountTypes":["members"],
-      "members": {"data":"","button":"Members","uniqueId":"organizationTotalIncomeMembers", "chartType":"bar"}
+      "totalIncome": {
+        "title": "Total Income by Membership",
+        "uniqueId": "organizationTotalIncome",
+        "description": "This report shows the fee collected vs the number of members in the club.",
+        "accountTypes": [
+          "members"
+        ],
+        "members": {
+          "data": "",
+          "button": "Members",
+          "uniqueId": "organizationTotalIncomeMembers",
+          "chartType": "bar"
+        }
       }
     }
   }
