@@ -79,19 +79,19 @@
           "data": "",
           "button": "All",
           "uniqueId": "individualInconsistantDataAll",
-          "chartType": "pieAndTableList"
+          "chartType": "table"
         },
         "members": {
           "data": "",
           "button": "Members",
           "uniqueId": "individualInconsistantDataMembers",
-          "chartType": "pieAndTableList"
+          "chartType": "table"
         },
         "nonMembers": {
           "data": "",
           "button": "Non Members",
           "uniqueId": "individualInconsistantDataNonMembers",
-          "chartType": "pieAndTableList"
+          "chartType": "table"
         }
       },
       "termEndDecember31": {
@@ -105,7 +105,7 @@
           "data": "",
           "button": "Members",
           "uniqueId": "individualTermEndDecember31Members",
-          "chartType": "pieAndUrl"
+          "chartType": "pieAndNeon"
         }
       },
       "memberCreationDate": {
@@ -227,7 +227,7 @@
           "data": "",
           "button": "Members",
           "uniqueId": "organizationTermEndDecember31Members",
-          "chartType": "pieAndUrl"
+          "chartType": "pieAndNeon"
         }
       },
       "memberCreationDate": {

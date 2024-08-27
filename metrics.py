@@ -344,6 +344,9 @@ def get_name_inconsistencies(individuals: pd.DataFrame) -> pd.DataFrame:
     last_name["where"] = "lastName"
     res = pd.concat([first_name, last_name])
     res.reset_index(drop=True, inplace=True)
+    # Add url to the DataFrame
+    base_url = "https://saccsf.app.neoncrm.com/admin/accounts/*/about"
+    res["url"] = res["accountId"].astype(str).apply(lambda x: base_url.replace("*", x))
     return res
 
 
@@ -443,7 +446,18 @@ def get_31_dec_term_end_table_plot(
 
     fig_html = fig.to_html(full_html=False, include_plotlyjs=False)
 
-    return (term_31_dec_filtered, fig_html)
+    # Load URL from txt file
+    with open("references.txt", "r") as f:
+        lines = f.read().splitlines()
+
+    if mode == "individuals":
+        url = lines[7].split(";")[1]
+        title = "Individuals with a Membership End Date of 31 Dec"
+    else:
+        url = lines[8].split(";")[1]
+        title = "Companies with a Membership End Date of 31 Dec"
+
+    return (fig_html, url, title)
 
 
 def get_members(df) -> pd.DataFrame:
