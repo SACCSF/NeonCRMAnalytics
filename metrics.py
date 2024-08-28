@@ -439,7 +439,7 @@ def get_31_dec_term_end_table_plot(
     )
 
     fig.update_traces(
-        marker=dict(colors=["#50C878", "#FF0000"], line=dict(color="#000000", width=2)),
+        marker=dict(colors=["#FF0000", "#50C878"], line=dict(color="#000000", width=2)),
         showlegend=False,
     )
 
