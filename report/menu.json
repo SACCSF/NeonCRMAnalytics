@@ -13,7 +13,7 @@
       "feeVsMembers": {
         "title": "Fee vs Members",
         "uniqueId": "individualFeeVsMembers",
-        "description": "A Table to compare the fee paid vs the membership type of the members to find missmatches.",
+        "description": "A table to compare the fee paid vs the membership type of the members to find missmatches.",
         "accountTypes": [
           "members"
         ],
@@ -111,7 +111,7 @@
       "memberCreationDate": {
         "title": "Member Creation Date",
         "uniqueId": "individualMemberCreationDate",
-        "description": "A bar chart that shows the Registration Date of the members per quarter.",
+        "description": "A bar chart that shows the registration date of the members per quarter.",
         "accountTypes": [
           "members",
           "pastMembers",
@@ -163,7 +163,7 @@
       "feeVsMembers": {
         "title": "Fee vs Members",
         "uniqueId": "organizationFeeVsMembers",
-        "description": "A Table to compare the fee paid vs the membership type of the members to find missmatches.",
+        "description": "A table to compare the fee paid vs the membership type of the members to find missmatches.",
         "accountTypes": [
           "members"
         ],
@@ -233,7 +233,7 @@
       "memberCreationDate": {
         "title": "Member Creation Date",
         "uniqueId": "organizationMemberCreationDate",
-        "description": "A bar chart that shows the Registration Date of the members per quarter.",
+        "description": "A bar chart that shows the registration date of the members per quarter.",
         "accountTypes": [
           "members",
           "pastMembers",
