@@ -1,9 +1,7 @@
 name: Create Report
 
 on:
-  schedule:
-    - cron: '00 15 * * *'
-    - cron: '00 22 * * *'
+  push:
 
 jobs:
   requirements:
@@ -84,8 +82,6 @@ jobs:
         # cc:
         from: Swiss-American Chamber of Commerce San Francisco Chapter
         body: "See report online: ${{ SECRETS.GH_PAGES_URL }}"
-        # html_body: file://nan_report_combined_jinja.html
-        # attachments: nan_report_combined_jinja.html
         secure: true
         ignore_cert: true
         convert_markdown: true
