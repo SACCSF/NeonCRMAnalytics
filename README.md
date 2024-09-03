@@ -19,6 +19,5 @@ These automations are there to make life easier 😄
 ## Authors
 
 - [@nicola-hermann](https://github.com/nicola-hermann)
-- [@alexIruth](https://github.com/AlexIruth)
 - [@flawas](https://github.com/flawas)
 
