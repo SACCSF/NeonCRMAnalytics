@@ -9,34 +9,155 @@
     <title>Neon CRM Report</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .star-yellow {
+            color: #dcc700;
+        }
+
+        .star-yellow:hover {
+            color: #756c00;
+        }
+
+        .house-brown {
+            color: #936803;
+        }
+
+        .btn.btn-outline-secondary:hover{
+            background-color: rgba(128, 128, 128, 0.1);
+            box-shadow: 5px 5px rgba(128, 128, 128, 0.37);
+        }
+
+        .card:hover {
+            background-color: rgba(128, 128, 128, 0.1);
+            box-shadow: 5px 5px rgba(128, 128, 128, 0.37);
+        }
+    </style>
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            let cookie = getCookie("saccsf");
+            if (cookie == null || cookie == "") {
+                setCookie("saccsf", "[]", 365);
+            }
+        }
+
+        function markFavorite(favorite) {
+            let value = "star-" + favorite;
+            document.getElementById(value).classList.remove("bi-star")
+            document.getElementById(value).classList.add("bi-star-fill")
+        }
+
+        function loadFavorites() {
+            let cookie = getCookie("saccsf");
+            if (cookie == '[]') {
+                document.getElementById('favorites').textContent = "No favorites selected";
+                console.log("No favorites selected")
+            } else {
+                // Mark favorites with a star
+                const favorites = JSON.parse(getCookie("saccsf"));
+                for (fav in favorites) {
+                    console.log("Mark favorite: " + favorites[fav]);
+                    markFavorite(favorites[fav]);
+                }
+
+                // Load favorites
+                let html = "";
+                for (fav in favorites) {
+                    console.log("Load favorite card: " + favorites[fav]);
+                    let value = "card" + favorites[fav];
+                    html += document.getElementById(value).outerHTML;
+                }
+                document.getElementById('favorites').outerHTML = html;
+            }
+            console.log("Favorites: " + getCookie("saccsf"));
+        }
+
+
+        function setFavorite(favoriteId) {
+            let fav = favoriteId.split("-")[1];
+            const favorites = JSON.parse(getCookie("saccsf"));
+            if (favorites != '[]') {
+                if(favorites.includes(fav)){
+                    console.log("Remove favorite: " + fav);
+                    favorites.splice(favorites.indexOf(fav), 1);
+                    console.log(favorites);
+                } else {
+                    console.log("Add favorite: " + fav);
+                    favorites.push(fav);
+                    console.log(favorites);
+                }
+                setCookie("saccsf", JSON.stringify(favorites), 365);
+            } else {
+                const favorites = new Array();
+                favorites.push(fav);
+                setCookie("saccsf", JSON.stringify(favorites), 365);
+            }
+            reloadPage();
+        }
+
+        function reloadPage() {
+            window.location.reload()
+        }
+
+        function loadData() {
+            checkCookie();
+            loadFavorites();
+        }
+    </script>
 </head>
 
-<body>
+<body onload="loadData()">
 <div class="container">
-    <header>
-        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-            <div class="d-flex align-items-center link-body-emphasis text-decoration-none">
-                <span class="fs-2">NEON CRM Automatic Report | {{ export_date }}</span>
-            </div>
-        </div>
+    <header class="d-flex flex-wrap justify-content-md-between py-3 mb-4 border-bottom">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <button type="submit" class="btn btn-outline-secondary" onclick="reloadPage()">
+                <i class="bi bi-house house-brown"></i>
+            </button>
+            <span class="fs-4" style="margin-left: 20px;">NEON CRM Automatic Report</span>
+        </a>
+        <h6>{{ export_date }}</h6>
     </header>
 
     <div id="group">
-
         <!-- CARD -->
         <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
+            <h1>Favorites</h1>
+            <div id="favorites"></div>
             <h1>Individuals</h1>
             {% for report_key in data.individuals.list %}
             {% set report = data.individuals[report_key] %}
-            <div class="col-sm-4 mb-3">
+            <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
                 <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ report.title }}</h5>
-                        <p class="card-text">{{ report.description }}</p>
-                        <button class="btn btn-primary" data-bs-target="#{{ report.uniqueId }}"
-                                data-bs-toggle="collapse">
-                            Open report
+                    <div class="position-absolute top-1 end-0 d-flex gap-2 mb-3" >
+                        <button type="submit" class="btn" id="starbtn-{{ report.uniqueId }}" onclick="setFavorite(this.id)">
+                            <i id="star-{{ report.uniqueId }}" class="bi bi-star star-yellow"></i>
                         </button>
+                    </div>
+                    <div class="card-body" data-bs-target="#{{ report.uniqueId }}" data-bs-toggle="collapse">
+                        <h5 class="card-title" style="margin-bottom: 0px;">{{ report.title }}</h5>
+                        <div class="badge rounded-pill text-bg-primary opacity-50">Individuals</div>
+                        <p class="card-text">{{ report.description }}</p>
                     </div>
                 </div>
             </div>
@@ -62,11 +183,6 @@
                     <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
                         report[rep].button }}</label>
                     {% endfor %}
-                    <input type="checkbox" class="btn-check" id="btnhome"
-                           autocomplete="off" href="#home"
-                           aria-controls="home" aria-expanded="false"
-                           data-bs-toggle="collapse">
-                    <label class="btn btn-outline-secondary" for="btnhome">Home</label>
                 </div>
                 <div id="diagrams">
                     {% for rep in report.accountTypes %}
@@ -74,7 +190,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="container">
                             <div class="row">
                                 {% for chart in report[rep].data %}
@@ -97,7 +213,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table">
@@ -135,7 +251,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             <table class="table">
                                 <thead>
@@ -166,7 +282,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             {{ report[rep].data.0 }}
                             <a href="{{ report[rep].data.1 }}" target="_blank">
@@ -182,9 +298,9 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
-                        {{ report[rep].data }}
+                            {{ report[rep].data }}
                         </div>
                     </div>
                     {% endif %}
@@ -197,20 +313,22 @@
         <!-- End Block -->
         {% endfor %}
 
-            <!-- CARD -->
+        <!-- CARD -->
         <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
             <h1>Organizations</h1>
             {% for report_key in data.organizations.list %}
             {% set report = data.organizations[report_key] %}
-            <div class="col-sm-4 mb-3">
+            <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
                 <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ report.title }}</h5>
-                        <p class="card-text">{{ report.description }}</p>
-                        <button class="btn btn-primary" data-bs-target="#{{ report.uniqueId }}"
-                                data-bs-toggle="collapse">
-                            Open report
+                    <div class="position-absolute top-1 end-0 d-flex gap-2 mb-3" >
+                        <button type="submit" class="btn" id="starbtn-{{ report.uniqueId }}" onclick="setFavorite(this.id)">
+                            <i id="star-{{ report.uniqueId }}" class="bi bi-star star-yellow"></i>
                         </button>
+                    </div>
+                    <div class="card-body" data-bs-target="#{{ report.uniqueId }}" data-bs-toggle="collapse">
+                        <h5 class="card-title" style="margin-bottom: 0px;">{{ report.title }}</h5>
+                        <div class="badge rounded-pill text-bg-success opacity-50">Organizations</div>
+                        <p class="card-text">{{ report.description }}</p>
                     </div>
                 </div>
             </div>
@@ -236,11 +354,6 @@
                     <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
                         report[rep].button }}</label>
                     {% endfor %}
-                    <input type="checkbox" class="btn-check" id="btnhome"
-                           autocomplete="off" href="#home"
-                           aria-controls="home" aria-expanded="false"
-                           data-bs-toggle="collapse">
-                    <label class="btn btn-outline-secondary" for="btnhome">Home</label>
                 </div>
                 <div id="diagrams">
                     {% for rep in report.accountTypes %}
@@ -248,7 +361,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="container">
                             <div class="row">
                                 {% for chart in report[rep].data %}
@@ -271,7 +384,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table">
@@ -309,7 +422,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             <table class="table">
                                 <thead>
@@ -340,7 +453,7 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
                             {{ report[rep].data.0 }}
                             <a href="{{ report[rep].data.1 }}" target="_blank">
@@ -356,9 +469,9 @@
                     <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         <hr>
-                        <h3>{{ report[rep].button  }}</h3>
+                        <h3>{{ report[rep].button }}</h3>
                         <div class="row">
-                        {{ report[rep].data }}
+                            {{ report[rep].data }}
                         </div>
                     </div>
                     {% endif %}
