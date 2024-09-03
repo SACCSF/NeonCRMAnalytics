@@ -31,6 +31,10 @@
             background-color: rgba(128, 128, 128, 0.1);
             box-shadow: 5px 5px rgba(128, 128, 128, 0.37);
         }
+
+        .whitespace {
+            margin-top: 30px;
+        }
     </style>
     <script>
         function setCookie(cname, cvalue, exdays) {
@@ -144,7 +148,7 @@
         <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
             <h1>Favorites</h1>
             <div id="favorites"></div>
-            <h1>Individuals</h1>
+            <h1 class="whitespace">Individuals</h1>
             {% for report_key in data.individuals.list %}
             {% set report = data.individuals[report_key] %}
             <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
@@ -315,7 +319,7 @@
 
         <!-- CARD -->
         <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
-            <h1>Organizations</h1>
+            <h1 class="whitespace">Organizations</h1>
             {% for report_key in data.organizations.list %}
             {% set report = data.organizations[report_key] %}
             <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
