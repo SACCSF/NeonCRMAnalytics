@@ -177,25 +177,34 @@
             <div class="container">
                 <h1>{{ report.title }}</h1>
                 <p>{{ report.description }}</p>
-                {% set firstItem = report.accountTypes[0] %}
+
                 {% set items = report.accountTypes|length %}
                 <!-- Menu for all account types -->
                 {% if items > 1 %}
-                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                     {% for rep in report.accountTypes %}
-                    <input type="submit" class="btn-check" id="btn{{ report[rep].uniqueId }}"
+                    {% if rep == report.accountTypes[0] %}
+                    <input type="checkbox" class="btn-check" name="btnradio" id="btn{{ report[rep].uniqueId }}"
+                           autocomplete="off" href="#{{ report[rep].uniqueId }}"
+                           aria-controls="{{ report[rep].uniqueId }}" data-bs-toggle="collapse" checked>
+                    <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
+                        report[rep].button }}</label>
+                    {% else %}
+                    <input type="checkbox" class="btn-check" id="btn{{ report[rep].uniqueId }}"
                            autocomplete="off" href="#{{ report[rep].uniqueId }}"
                            aria-controls="{{ report[rep].uniqueId }}" aria-expanded="false"
                            data-bs-toggle="collapse">
                     <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
                         report[rep].button }}</label>
+                    {% endif %}
+
                     {% endfor %}
                 </div>
                 {% endif %}
                 <div id="diagrams">
                     {% for rep in report.accountTypes %}
                     {% if report[rep].chartType == 'pieAndNeonList' %}
-                    {% if rep == firstItem %}
+                    {% if rep == report.accountTypes[0] %}
                     <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
                          data-bs-parent="#diagrams">
                         {% else %}
@@ -222,13 +231,13 @@
                         {% endif %}
 
                         {% if report[rep].chartType == 'pivot' %}
-                        {% if rep == firstItem %}
+                        {% if rep == report.accountTypes[0] %}
                         <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
                              data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
+                            {% else %}
+                            <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                 data-bs-parent="#diagrams">
+                                {% endif %}
 
                                 <hr>
                                 <h3>{{ report[rep].button }}</h3>
@@ -266,191 +275,32 @@
                             {% endif %}
 
                             {% if report[rep].chartType == 'table' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            {% for title in report[rep].data.columns %}
-                                            <th scope="col">{{ title }}</th>
-                                            {% endfor %}
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        {% for idx, row in report[rep].data.iterrows() %}
-                                        <tr>
-                                            <th scope="row">{{ idx }}</th>
-                                            {% for col in report[rep].data.columns %}
-                                            <td>{{ report[rep].data.at[idx, col] }}</td>
-                                            {% endfor %}
-                                        </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            {% if report[rep].chartType == 'pieAndNeon' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    {{ report[rep].data.0 }}
-                                    <a href="{{ report[rep].data.1 }}" target="_blank">
-                                        <button type="button" class="btn btn-primary">
-                                            To Neon Report
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            {% if report[rep].chartType == 'bar' %}
-                            <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                            {% if rep == report.accountTypes[0] %}
+                            <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
                                  data-bs-parent="#diagrams">
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    {{ report[rep].data }}
-                                </div>
-                            </div>
-                            {% endif %}
-
-
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <!-- End Block -->
-                {% endfor %}
-
-                <!-- CARD -->
-                <div class="row collapse multi-collapse show" id="home" aria-hidden="false" data-bs-parent="#group">
-                    <h1 class="whitespace">Organizations</h1>
-                    {% for report_key in data.organizations.list %}
-                    {% set report = data.organizations[report_key] %}
-                    <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
-                        <div class="card">
-                            <div class="position-absolute top-1 end-0 d-flex gap-2 mb-3">
-                                <button type="submit" class="btn" id="starbtn-{{ report.uniqueId }}"
-                                        onclick="setFavorite(this.id)">
-                                    <i id="star-{{ report.uniqueId }}" class="bi bi-star star-yellow"></i>
-                                </button>
-                            </div>
-                            <div class="card-body" data-bs-target="#{{ report.uniqueId }}" data-bs-toggle="collapse">
-                                <h5 class="card-title" style="margin-bottom: 0px;">{{ report.title }}</h5>
-                                <div class="badge rounded-pill text-bg-success opacity-50">Organizations</div>
-                                <p class="card-text">{{ report.description }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <!-- END OF CARD -->
-                </div>
-
-                {% for report_key in data.organizations.list %}
-                {% set report = data.organizations[report_key] %}
-                <!-- Block -->
-                <div class="collapse multi-collapse" id="{{ report.uniqueId }}" aria-hidden="true"
-                     data-bs-parent="#group">
-                    <div class="container">
-                        <h1>{{ report.title }}</h1>
-                        <p>{{ report.description }}</p>
-                        {% set firstItem = report.accountTypes[0] %}
-                        {% set items = report.accountTypes|length %}
-                        <!-- Menu for all account types -->
-                        {% if items > 1 %}
-                        <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                            {% for rep in report.accountTypes %}
-                            <input type="submit" class="btn-check" id="btn{{ report[rep].uniqueId }}"
-                                   autocomplete="off" href="#{{ report[rep].uniqueId }}"
-                                   aria-controls="{{ report[rep].uniqueId }}" aria-expanded="false"
-                                   data-bs-toggle="collapse">
-                            <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
-                                report[rep].button }}</label>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        <div id="diagrams">
-                            {% for rep in report.accountTypes %}
-                            {% if report[rep].chartType == 'pieAndNeonList' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="container">
+                                {% else %}
+                                <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                     data-bs-parent="#diagrams">
+                                    {% endif %}
+                                    <hr>
+                                    <h3>{{ report[rep].button }}</h3>
                                     <div class="row">
-                                        {% for chart in report[rep].data %}
-                                        <div class="col-md-6 mb-3">
-                                            <h3>{{ chart.2 }}</h3>
-                                            {{ chart.0|safe }}
-                                            <a href="{{ chart.1 }}" target="_blank">
-                                                <button type="button" class="btn btn-primary">
-                                                    To Neon Report
-                                                </button>
-                                            </a>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            {% if report[rep].chartType == 'pivot' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    <div class="col-md-12">
                                         <table class="table">
                                             <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                {% for title in report[rep].data.T.columns %}
+                                                {% for title in report[rep].data.columns %}
                                                 <th scope="col">{{ title }}</th>
                                                 {% endfor %}
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <!-- organizations_fee_membership.iloc[0]['0.0$'] -->
 
-                                            {% for idx, row in report[rep].data.T.iterrows() %}
+                                            {% for idx, row in report[rep].data.iterrows() %}
                                             <tr>
                                                 <th scope="row">{{ idx }}</th>
-                                                {% for col in report[rep].data.T.columns %}
-                                                {% if report[rep].data.at[col, idx] > 0.0 %}
-                                                <td>{{ report[rep].data.at[col, idx] }}</td>
-                                                {% else %}
-                                                <td></td>
-                                                {% endif %}
+                                                {% for col in report[rep].data.columns %}
+                                                <td>{{ report[rep].data.at[idx, col] }}</td>
                                                 {% endfor %}
                                             </tr>
                                             {% endfor %}
@@ -458,87 +308,258 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                            {% endif %}
+                                {% endif %}
 
-                            {% if report[rep].chartType == 'table' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            {% for title in report[rep].data.columns %}
-                                            <th scope="col">{{ title }}</th>
-                                            {% endfor %}
-                                        </tr>
-                                        </thead>
-                                        <tbody>
+                                {% if report[rep].chartType == 'pieAndNeon' %}
+                                {% if rep == report.accountTypes[0] %}
+                                <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
+                                     data-bs-parent="#diagrams">
+                                    {% else %}
+                                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                         data-bs-parent="#diagrams">
+                                        {% endif %}
+                                        <hr>
+                                        <h3>{{ report[rep].button }}</h3>
+                                        <div class="row">
+                                            {{ report[rep].data.0 }}
+                                            <a href="{{ report[rep].data.1 }}" target="_blank">
+                                                <button type="button" class="btn btn-primary">
+                                                    To Neon Report
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
 
-                                        {% for idx, row in report[rep].data.iterrows() %}
-                                        <tr>
-                                            <th scope="row">{{ idx }}</th>
-                                            {% for col in report[rep].data.columns %}
-                                            <td>{{ report[rep].data.at[idx, col] }}</td>
-                                            {% endfor %}
-                                        </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    {% if report[rep].chartType == 'bar' %}
+                                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                         data-bs-parent="#diagrams">
+                                        <hr>
+                                        <h3>{{ report[rep].button }}</h3>
+                                        <div class="row">
+                                            {{ report[rep].data }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+
+                                    {% endfor %}
                                 </div>
                             </div>
-                            {% endif %}
-
-                            {% if report[rep].chartType == 'pieAndNeon' %}
-                            {% if rep == firstItem %}
-                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% else %}
-                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                             data-bs-parent="#diagrams">
-                        {% endif %}
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    {{ report[rep].data.0 }}
-                                    <a href="{{ report[rep].data.1 }}" target="_blank">
-                                        <button type="button" class="btn btn-primary">
-                                            To Neon Report
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            {% if report[rep].chartType == 'bar' %}
-                            <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
-                                 data-bs-parent="#diagrams">
-                                <hr>
-                                <h3>{{ report[rep].button }}</h3>
-                                <div class="row">
-                                    {{ report[rep].data }}
-                                </div>
-                            </div>
-                            {% endif %}
-
-
-                            {% endfor %}
                         </div>
-                    </div>
-                </div>
-                <!-- End Block -->
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+                        <!-- End Block -->
+                        {% endfor %}
+
+                        <!-- CARD -->
+                        <div class="row collapse multi-collapse show" id="home" aria-hidden="false"
+                             data-bs-parent="#group">
+                            <h1 class="whitespace">Organizations</h1>
+                            {% for report_key in data.organizations.list %}
+                            {% set report = data.organizations[report_key] %}
+                            <div class="col-sm-4 mb-3" id="card{{ report.uniqueId }}">
+                                <div class="card">
+                                    <div class="position-absolute top-1 end-0 d-flex gap-2 mb-3">
+                                        <button type="submit" class="btn" id="starbtn-{{ report.uniqueId }}"
+                                                onclick="setFavorite(this.id)">
+                                            <i id="star-{{ report.uniqueId }}" class="bi bi-star star-yellow"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body" data-bs-target="#{{ report.uniqueId }}"
+                                         data-bs-toggle="collapse">
+                                        <h5 class="card-title" style="margin-bottom: 0px;">{{ report.title }}</h5>
+                                        <div class="badge rounded-pill text-bg-success opacity-50">Organizations</div>
+                                        <p class="card-text">{{ report.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <!-- END OF CARD -->
+                        </div>
+
+                        {% for report_key in data.organizations.list %}
+                        {% set report = data.organizations[report_key] %}
+                        <!-- Block -->
+                        <div class="collapse multi-collapse" id="{{ report.uniqueId }}" aria-hidden="true"
+                             data-bs-parent="#group">
+                            <div class="container">
+                                <h1>{{ report.title }}</h1>
+                                <p>{{ report.description }}</p>
+                                {% set items = report.accountTypes|length %}
+                                <!-- Menu for all account types -->
+                                {% if items > 1 %}
+                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                    {% for rep in report.accountTypes %}
+                                    {% if rep == report.accountTypes[0] %}
+                                    <input type="checkbox" class="btn-check" name="btnradio"
+                                           id="btn{{ report[rep].uniqueId }}"
+                                           autocomplete="off" href="#{{ report[rep].uniqueId }}"
+                                           aria-controls="{{ report[rep].uniqueId }}" data-bs-toggle="collapse" checked>
+                                    <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
+                                        report[rep].button }}</label>
+                                    {% else %}
+                                    <input type="checkbox" class="btn-check" id="btn{{ report[rep].uniqueId }}"
+                                           autocomplete="off" href="#{{ report[rep].uniqueId }}"
+                                           aria-controls="{{ report[rep].uniqueId }}" aria-expanded="false"
+                                           data-bs-toggle="collapse">
+                                    <label class="btn btn-outline-primary" for="btn{{ report[rep].uniqueId }}">{{
+                                        report[rep].button }}</label>
+                                    {% endif %}
+
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div id="diagrams">
+                                    {% for rep in report.accountTypes %}
+                                    {% if report[rep].chartType == 'pieAndNeonList' %}
+                                    {% if rep == report.accountTypes[0] %}
+                                    <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
+                                         data-bs-parent="#diagrams">
+                                        {% else %}
+                                        <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                             data-bs-parent="#diagrams">
+                                            {% endif %}
+                                            <hr>
+                                            <h3>{{ report[rep].button }}</h3>
+                                            <div class="container">
+                                                <div class="row">
+                                                    {% for chart in report[rep].data %}
+                                                    <div class="col-md-6 mb-3">
+                                                        <h3>{{ chart.2 }}</h3>
+                                                        {{ chart.0|safe }}
+                                                        <a href="{{ chart.1 }}" target="_blank">
+                                                            <button type="button" class="btn btn-primary">
+                                                                To Neon Report
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if report[rep].chartType == 'pivot' %}
+                                        {% if rep == report.accountTypes[0] %}
+                                        <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
+                                             data-bs-parent="#diagrams">
+                                            {% else %}
+                                            <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                                 data-bs-parent="#diagrams">
+                                                {% endif %}
+                                                <hr>
+                                                <h3>{{ report[rep].button }}</h3>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                {% for title in report[rep].data.T.columns %}
+                                                                <th scope="col">{{ title }}</th>
+                                                                {% endfor %}
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <!-- organizations_fee_membership.iloc[0]['0.0$'] -->
+
+                                                            {% for idx, row in report[rep].data.T.iterrows() %}
+                                                            <tr>
+                                                                <th scope="row">{{ idx }}</th>
+                                                                {% for col in report[rep].data.T.columns %}
+                                                                {% if report[rep].data.at[col, idx] > 0.0 %}
+                                                                <td>{{ report[rep].data.at[col, idx] }}</td>
+                                                                {% else %}
+                                                                <td></td>
+                                                                {% endif %}
+                                                                {% endfor %}
+                                                            </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
+                                            {% if report[rep].chartType == 'table' %}
+                                            {% if rep == report.accountTypes[0] %}
+                                            <div class="collapse multi-collapse show" id="{{ report[rep].uniqueId }}"
+                                                 data-bs-parent="#diagrams">
+                                                {% else %}
+                                                <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                                     data-bs-parent="#diagrams">
+                                                    {% endif %}
+                                                    <hr>
+                                                    <h3>{{ report[rep].button }}</h3>
+                                                    <div class="row">
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                {% for title in report[rep].data.columns %}
+                                                                <th scope="col">{{ title }}</th>
+                                                                {% endfor %}
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                            {% for idx, row in report[rep].data.iterrows() %}
+                                                            <tr>
+                                                                <th scope="row">{{ idx }}</th>
+                                                                {% for col in report[rep].data.columns %}
+                                                                <td>{{ report[rep].data.at[idx, col] }}</td>
+                                                                {% endfor %}
+                                                            </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+
+                                                {% if report[rep].chartType == 'pieAndNeon' %}
+                                                {% if rep == report.accountTypes[0] %}
+                                                <div class="collapse multi-collapse show"
+                                                     id="{{ report[rep].uniqueId }}"
+                                                     data-bs-parent="#diagrams">
+                                                    {% else %}
+                                                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                                         data-bs-parent="#diagrams">
+                                                        {% endif %}
+                                                        <hr>
+                                                        <h3>{{ report[rep].button }}</h3>
+                                                        <div class="row">
+                                                            {{ report[rep].data.0 }}
+                                                            <a href="{{ report[rep].data.1 }}" target="_blank">
+                                                                <button type="button" class="btn btn-primary">
+                                                                    To Neon Report
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if report[rep].chartType == 'bar' %}
+                                                    <div class="collapse multi-collapse" id="{{ report[rep].uniqueId }}"
+                                                         data-bs-parent="#diagrams">
+                                                        <hr>
+                                                        <h3>{{ report[rep].button }}</h3>
+                                                        <div class="row">
+                                                            {{ report[rep].data }}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Block -->
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
 </body>
 
 </html>
