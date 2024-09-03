@@ -13,7 +13,6 @@ We generate all code documentation automatically. This is automatically updated 
 ## Automations
 
 [![Create Report](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/report.yml/badge.svg)](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/report.yml)
-[![Docs](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/SACCSF/NeonCRMAnalytics/actions/workflows/docs.yml)
 
 These automations are there to make life easier 😄
 
