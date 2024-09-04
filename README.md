@@ -63,11 +63,11 @@ The documentation is automatically generated and can be found [here](https://sac
 
 ```mermaid
 graph TD;
-    A[Push Event] --> B[Requirements Job]
+    A[Scheduled Event] --> B[Requirements Job]
     B -->|runs-on: ubuntu-latest| C[Check Requirements]
     C --> D[Update requirements.txt]
 
-    B --> E[Report Job]
+    D --> E[Report Job]
     E -->|needs: requirements| F[Install Requirements]
     F --> G[Remove Company File]
     F --> H[Remove Individuals File]
@@ -79,7 +79,7 @@ graph TD;
     F --> N[Upload Pages Artifact]
     F --> O[Send Email]
 
-    E --> P[Deploy Job]
+    O --> P[Deploy Job]
     P -->|needs: report| Q[Deploy to GitHub Pages]
 
     subgraph Requirements Job
