@@ -2,8 +2,8 @@ name: Create Report
 
 on:
   # push: // just use this for testing
-  [schedule:
-    - cron: '0 5 * 1,4,7,10 *'] # every 3 months at 5am
+  schedule:
+    - cron: '0 5 * 1,4,7,10 *' # every 3 months at 5am
 
 jobs:
   requirements:
