@@ -134,13 +134,14 @@
 <body onload="loadData()">
 <div class="container">
     <header class="d-flex flex-wrap justify-content-md-between py-3 mb-4 border-bottom">
-        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <a class="d-flex align-items-center link-body-emphasis text-decoration-none">
             <button type="submit" class="btn btn-outline-secondary" onclick="reloadPage()">
                 <i class="bi bi-house house-brown"></i>
             </button>
             <span class="fs-4" style="margin-left: 20px;">NEON CRM Automatic Report</span>
+
         </a>
-        <h6>{{ export_date }}</h6>
+        <span class="fs-4 d-flex justify-content-end">{{ export_date }}</span>
     </header>
 
     <div id="group">
