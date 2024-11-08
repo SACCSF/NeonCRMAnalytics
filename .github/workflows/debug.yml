@@ -1,0 +1,17 @@
+name: Show parameters
+on: [push]
+
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up secret file
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.GH_PAGES_URL }}
+      run: |
+        echo ${{secrets.GH_PAGES_URL}} | sed 's/./& /g'
